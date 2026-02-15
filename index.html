@@ -355,23 +355,15 @@ ALLERGIES: NKDA`;
         function resetToSample() {
             inputTextarea.value = SAMPLE_INPUT;
         }
-// ----- Extract Location
-		// 1. Define the words that surround the facility name
-const startAnchor = "*"; // The asterisk before the name
-const endAnchor = "Time:"; // The word after the name
 
-const startIndex = text.indexOf(startAnchor);
-const endIndex = text.indexOf(endAnchor);
-
-let loc_name = "Unknown Location";
-
-if (startIndex !== -1 && endIndex !== -1) {
-    // Extract everything between the '*' and 'Time:'
-    loc_name = text.substring(startIndex + 1, endIndex).trim();
-}
 
 // ----- Updated Function to extract patient demographics -----
         function extractDemographics(text) {
+ 
+			// ----- main extraction and formatting function -----
+        function generateNoteFromInput(input) {
+                      
+			
             const demographics = {
                 name: '',
                 dob: ' ',
@@ -749,9 +741,20 @@ if (startIndex !== -1 && endIndex !== -1) {
 
         // ----- main extraction and formatting function -----
         function generateNoteFromInput(input) {
+			
             // Normalize line breaks
             const text = input.replace(/\r\n/g, '\n');
+
+            // --- FIXED: Extract Location (inside the function) ---
+            const locStartAnchor = "*";
+            const locEndAnchor = "Time:";
+            const locStartIndex = text.indexOf(locStartAnchor);
+            const locEndIndex = text.indexOf(locEndAnchor);
             
+            let loc_name = "Unknown Location";
+            if (locStartIndex !== -1 && locEndIndex !== -1) {
+                loc_name = text.substring(locStartIndex + 1, locEndIndex).trim();
+				
             // Get demographics
             const demographics = extractDemographics(text);
             
