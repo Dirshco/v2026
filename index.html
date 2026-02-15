@@ -360,9 +360,6 @@ ALLERGIES: NKDA`;
 // ----- Updated Function to extract patient demographics -----
         function extractDemographics(text) {
  
-			// ----- main extraction and formatting function -----
-        function generateNoteFromInput(input) {
-                      
 			
             const demographics = {
                 name: '',
@@ -396,8 +393,6 @@ ALLERGIES: NKDA`;
     		demographics.name = `${extractedName}`;
 			}
 		
-
-     
             // 2. Extract DOB (Handles formats like Birth Date: 1/1/1948)
             const dobMatch = text.match(/Birth\s*Date:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) ||
                             text.match(/Date\s*of\s*Birth:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
