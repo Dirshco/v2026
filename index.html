@@ -369,13 +369,24 @@ ALLERGIES: NKDA`;
             const anchor2 = "Page # 1";
 			const statusIndex = text.indexOf(anchor);
 	        const pagenumIndex = text.indexOf(anchor2);
-            const endExtraction = text.indexOf(anchor)+8;
-	        const startExtraction = text.indexOf(anchor2);
+           // const endExtraction = text.indexOf(anchor)+8;
+	       // const startExtraction = text.indexOf(anchor2);
  	      //  const fullName = text.substring(132, 152).trim();
-			  const fullName = text.substring(pagenumIndex, statusIndex).trim();
-		    if (anchor2) {
-				demographics.name =  fullName  ;
-        	    }
+			
+			if (statusIndex !== -1 && pagenumIndex !== -1) {
+    
+ 	 	  	// Start extraction right AFTER "Page # 1" (which is 8 characters long)
+    		const startPos = pagenumIndex + anchor2.length;
+    
+	    	// Extract everything between "Page # 1" and "Status:"
+		    // For your text, this captures: "Adams, Adam(12345)"
+    		const extractedName = text.substring(startPos, statusIndex).trim();
+				
+			// Assign to demographics object
+  			// Adding the "Full name: " prefix to match your requirement
+    		demographics.name = `${extractedName}`;
+			}
+		
 
      
             // 2. Extract DOB (Handles formats like Birth Date: 1/1/1948)
