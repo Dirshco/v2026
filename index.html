@@ -329,7 +329,6 @@ User:  Doctor Name_		Page # 1 Doe, Jane (12345)
 DOB: 01/15/1955
 DOS: 02/14/2026
 Gender: Female
-Admission (Re-entry): 02/14/2026
 
 71yo f. Vital Sign	Recent Value	Date	Time
 Weight:	390.2	2/13/2026	20:58
@@ -356,19 +355,14 @@ ALLERGIES: NKDA`;
             inputTextarea.value = SAMPLE_INPUT;
         }
 
-
 // ----- Updated Function to extract patient demographics -----
         function extractDemographics(text) {
- 
-			
             const demographics = {
                 name: '',
                 dob: ' ',
-				doa: '',
                 dos: ' ',
                 gender: ' '
             };
-			const dateOfService = text.substring(5, 18).trim();
 
             // 1. Extract Name and MRN using the "Status" anchor
             const anchor = "Status:";
@@ -390,9 +384,13 @@ ALLERGIES: NKDA`;
 				
 			// Assign to demographics object
   			// Adding the "Full name: " prefix to match your requirement
-    		demographics.name = `${extractedName}`;
+    		demographics.name = ` ${extractedName}`;
 			}
-		
+		//    if (anchor2) {
+				//demographics.name =  fullName  ;
+		//	    }
+
+     
             // 2. Extract DOB (Handles formats like Birth Date: 1/1/1948)
             const dobMatch = text.match(/Birth\s*Date:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) ||
                             text.match(/Date\s*of\s*Birth:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
@@ -410,14 +408,8 @@ ALLERGIES: NKDA`;
                 let gender = genderMatch[1].trim();
                 demographics.gender = gender.toLowerCase().startsWith('f') ? 'Female' : 'Male';
             }
-
-			// 5. Extract Date of Admission: e.g. 02/14/2026
-			const dobMatch = text.match(/Birth\s*Date:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) ||
-                            text.match(/Date\s*of\s*(MDS):\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
-            if (dobMatch) {
-                demographics.doa = dobMatch[1];
-            }
-			return demographics;
+            
+            return demographics;
         }
             
 
@@ -736,20 +728,9 @@ ALLERGIES: NKDA`;
 
         // ----- main extraction and formatting function -----
         function generateNoteFromInput(input) {
-			
             // Normalize line breaks
             const text = input.replace(/\r\n/g, '\n');
-
-            // --- FIXED: Extract Location (inside the function) ---
-            const locStartAnchor = "*";
-            const locEndAnchor = "Time:";
-            const locStartIndex = text.indexOf(locStartAnchor);
-            const locEndIndex = text.indexOf(locEndAnchor);
             
-            let loc_name = "Unknown Location";
-            if (locStartIndex !== -1 && locEndIndex !== -1) {
-                loc_name = text.substring(locStartIndex + 1, locEndIndex).trim();
-				
             // Get demographics
             const demographics = extractDemographics(text);
             
@@ -976,8 +957,8 @@ Extremities: No cyanosis.
 Skin: Warm, dry, intact. 
 Neurological: No focal deficit.`;
 
-            // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan ----- // demographics.dos
-            return `Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${dateOfService} | Gender: ${demographics.gender}
+            // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan -----
+            return `Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.dos} | Gender: ${demographics.gender}
 
 CC: ${visitType}
 
@@ -990,29 +971,28 @@ PMH/PSH: ${pmhString}.
 Allergies: ${allergies}.
 Medications: ${medString}.
 
-VS: ${vitalString} inches.
+VS: ${vitalString}.
+
 ${physicalExam}
 
 Assessment:
 ${dxNumberedList}
 
 Plan:
-- Will continue supportive care, current medications.
-- Continue current diet and skincare.
-- Continue pain control
+- Will continue supportive care, current medications with close monitoring for hypotension, hypoglycemia, bleeding, and falls.
+- Continue current diet and skincare monitoring.
 - Fall precautions.
 - Recommended labs per monitoring guidelines.
-- Follow up per protocol or as needed.
+- Follow up per protocol or as need arise.
 
 CPT code: 99309
 
 Risk Assessment: Patient on multiple high-risk medications - Polypharmacy (${medFullList.length}+ medications) increases risk of drug interactions and adverse effects.${riskFactors.length > 0 ? ' Additional risks: ' + riskFactors.slice(0, 8).join(', ') + '.' : ''}${monitoringText}
 
 ICD10 Codes: ${dxCodeString}.
-NGA
 
-B: ${dateOfService}|${demographics.name}|${demographics.dob}| ${loc_name} | ${dxCodeString}|99309`;
-			
+NGA
+Billing: ${demographics.dos}|${demographics.name}|${demographics.dob}|| ${dxCodeString}| 99309`;
         }
 
         // ----- update output -----
