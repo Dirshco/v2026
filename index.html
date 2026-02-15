@@ -370,12 +370,6 @@ ALLERGIES: NKDA`;
 		demographics.name =  fullName  ;
             }
          
-                   
-                    
-                    
-                
-           
-
             // 2. Extract DOB (Handles formats like Birth Date: 1/1/1948)
             const dobMatch = text.match(/Birth\s*Date:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) ||
                             text.match(/Date\s*of\s*Birth:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
@@ -779,9 +773,9 @@ ALLERGIES: NKDA`;
                 }
             }
             
-            // Convert set to array and limit to 8 items
-            const medArray = Array.from(medSet).slice(0, 8);
-            const medString = medArray.length > 0 ? medArray.join(', ') : 'None listed';
+            // Convert set to array and limit to 18 items
+            const medArray = Array.from(medSet).slice(0, 18);
+            const medString = medArray.length > 0 ? medArray.join(', ') : ' ';
 
             // ----- 3. VITALS (ordered) with BMI calculation -----
             const vitals = {};
