@@ -211,6 +211,8 @@
             <option value="followup">F/u visit</option>
             <option value="annual">Annual f/u visit</option>
             <option value="abn_lab">Abnormal Lab</option>
+            <option value="HISTORY AND PHYSICAL">History and Physical</option>
+            <option value="DISCHARGE SUMMARY">DISCHARGE SUMMARY</option>
             <option value="fall">Fall</option>
             <option value="urgent">Urgent Visit</option>
             <option value="regulatory">Regulatory Visit</option>
@@ -686,6 +688,10 @@ ALLERGIES: NKDA`;
                     return "Pt was seen for a fall. Details noted. Case discussed with the staff. Medications reviewed. ";
                 case 'urgent':
                     return "Pt was seen in an urgent visit per staff request. ";
+                case 'HISTORY AND PHYSICAL':
+                    return "Pt was seen for initial evaluation. Hospital records reviewed. Details noted. Case discussed with the staff. Medications reviewed. ";
+                case 'DISCHARGE SUMMARY':
+                    return "Pt was seen for discharge preparation. See notes for details. Course: See form for more details. ";
                 case 'annual':
                     return "Pt was seen for an annual followup visit, regulatory visit. Case discussed with the staff. Meds and lab results were reviewed. ";
                 case 'regulatory':
