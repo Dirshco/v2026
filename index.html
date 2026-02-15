@@ -367,8 +367,8 @@ ALLERGIES: NKDA`;
             const anchor2 = "Page # 1";
 			const statusIndex = text.indexOf(anchor);
 	        const pagenumIndex = text.indexOf(anchor2);
-            const endExtraction = text.indexOf(anchor);
-	        const startExtraction = text.indexOf(anchor2)+8;
+            const endExtraction = text.indexOf(anchor)+8;
+	        const startExtraction = text.indexOf(anchor2);
  	      //  const fullName = text.substring(132, 152).trim();
 			  const fullName = text.substring(pagenumIndex, statusIndex).trim();
 		    if (anchor2) {
