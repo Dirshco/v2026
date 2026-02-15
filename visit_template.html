@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Note Generator - CPT 99309 with Full Template</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            padding: 30px;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #0b3b4b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h1 small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #2c6e7c;
+            margin-left: auto;
+        }
+        .main-panel {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .panel {
+            flex: 1 1 400px;
+            background: #f9fafc;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 1px 3px #00000010, 0 4px 10px #0000000c;
+        }
+        .panel h2 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: #1d4e5f;
+            border-bottom: 2px solid #cbdbe0;
+            padding-bottom: 8px;
+        }
+        textarea {
+            width: 100%;
+            height: 500px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            background: #ffffff;
+            border: 1px solid #bccbd2;
+            border-radius: 16px;
+            resize: vertical;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: 0.15s;
+        }
+        textarea:focus {
+            border-color: #2b95b3;
+            outline: none;
+            box-shadow: 0 0 0 3px #a3d0db70;
+        }
+        .button-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 14px;
+            margin: 24px 0 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: white;
+            border: 1px solid #2b95b3;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1d5d71;
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 3px #00000008;
+        }
+        button:hover {
+            background: #e2f0f5;
+            border-color: #147691;
+            color: #063544;
+            transform: scale(1.02);
+        }
+        button.primary {
+            background: #1d5d71;
+            border-color: #124653;
+            color: white;
+            box-shadow: 0 6px 10px #1d5d7130;
+        }
+        button.primary:hover {
+            background: #134c60;
+        }
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .copy-confirm {
+            color: #1e7b4b;
+            font-weight: 500;
+            background: #dff0e6;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .copy-confirm.show {
+            opacity: 1;
+        }
+        .guidance-box {
+            background: #e8f0f5;
+            border-left: 5px solid #1d5d71;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0 5px;
+            font-size: 0.9rem;
+        }
+        .guidance-box h3 {
+            margin: 0 0 8px 0;
+            color: #0b3b4b;
+            font-size: 1.1rem;
+        }
+        .guidance-box ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+            color: #1d4e5f;
+        }
+        .guidance-box li {
+            margin: 3px 0;
+        }
+        footer {
+            margin-top: 25px;
+            text-align: right;
+            color: #3f6f7e;
+            font-size: 0.9rem;
+        }
+        hr {
+            border: 1px solid #cde0e5;
+            margin: 20px 0 5px;
+        }
+        .risk-badge {
+            background: #d15a5a;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+        .visit-type-selector {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f0f7fa;
+            border-radius: 12px;
+        }
+        select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #bccbd2;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        📋 Nursing Home Note Generator <span class="risk-badge">CPT 99309</span>
+        <small>CMS · AGS · MDS ready</small>
+    </h1>
+    
+
+
+    <div class="visit-type-selector">
+        <strong>Visit Type:</strong>
+        <select id="visitTypeSelect">
+            <option value="followup">F/u visit</option>
+            <option value="annual">Annual f/u visit</option>
+            <option value="abn_lab">Abnormal Lab</option>
+            <option value="fall">Fall</option>
+            <option value="urgent">Urgent Visit</option>
+            <option value="regulatory">Regulatory Visit</option>
+            <option value="capacity">Capacity Evaluation</option>
+            <option value="telemed">Telemedicine Visit</option>
+            <option value="family">Family Meeting</option>
+            <option value="other">Other (default)</option>
+        </select>
+        <span style="margin-left: 20px; color: #1d5d71;">Select visit type to customize chief complaint</span>
+    </div>
+
+    <div class="main-panel">
+        <!-- INPUT PANEL -->
+        <div class="panel">
+            <h2>📝 1. Paste patient data</h2>
+            <textarea id="inputText" placeholder="Paste vitals, diagnoses, medications, allergies here... (see sample below)">Doe, Jane (12345)
+DOB: 01/15/1955
+DOS: 02/14/2026
+Gender: Female
+
+71yo f. Vital Sign	Recent Value	Date	Time
+Weight:	390.2	2/13/2026	20:58
+Blood Pressure:	165 /  73	2/14/2026	09:39
+Temperature:	98.0	2/14/2026	09:38
+Pulse:	69	2/14/2026	09:39
+Respirations:	17	2/14/2026	09:39
+O2 sats:	95.0 %	2/14/2026	09:39
+Height:	68.0	2/13/2026	16:42
+Pain Level:	0
+
+Medications:
+Baclofen Oral Tablet 10 MG
+DULoxetine HCl Oral Capsule Delayed Release Particles 60 MG
+Cardizem Oral Tablet 120 MG
+Bumetanide Oral Tablet 1 MG
+Amiodarone HCl Oral Tablet 200 MG
+
+
+Diagnoses:
+I50.42	CHRONIC COMBINED SYSTOLIC AND DIASTOLIC HRT FAIL
+E03.9	HYPOTHYROIDISM, UNSPECIFIED
+E78.2	MIXED HYPERLIPIDEMIA
+D64.9	ANEMIA, UNSPECIFIED
+K21.9	GASTRO-ESOPHAGEAL REFLUX DISEASE WITHOUT ESOPHAGITIS
+Z91.81	HISTORY OF FALLING
+
+
+ALLERGIES: NKDA</textarea>
+            <p style="margin: 8px 0 0 12px; opacity:0.7;">↑ sample preloaded — edit or replace</p>
+        </div>
+
+        <!-- OUTPUT PANEL -->
+        <div class="panel">
+            <div class="output-header">
+                <h2>📄 2. Generated template <span class="risk-badge">CPT 99309</span></h2>
+                <span id="copyConfirm" class="copy-confirm">✅ Copied!</span>
+            </div>
+            <textarea id="outputText"  placeholder="Click 'Generate note' to create template..." style="background:#f2f6f9;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                <span style="color:#1e5f72;">High complexity · CPT 99309</span>
+                <button id="copyButton" style="padding: 8px 20px;">📋 Copy to clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="button-bar">
+        <button id="generateBtn" class="primary">⚡ Generate note from input</button>
+        <button id="resetToSampleBtn">↺ Reload sample</button>
+        <button id="clearBtn">🗑️ Clear output</button>
+    </div>
+    
+    <!-- Risk Factor Summary (dynamic) -->
+    <div id="riskSummary" style="margin: 15px 0; padding: 12px; background: #f9f2e5; border-radius: 12px; border-left: 5px solid #d15a5a;">
+        <strong>⚠️ Risk Factors Detected:</strong> <span id="riskFactorsDisplay">Anticoagulation (Dabigatran), Antiarrhythmic (Amiodarone), Diabetes meds, Diuretics, Antihypertensives, Cardiac disease, Polypharmacy (14+), Morbid obesity, Fall history</span>
+        <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #5a3a3a;">These factors support CPT 99309 (high complexity) medical necessity documentation.</p>
+    </div>
+    
+    <!-- Clinical Guidance Box -->
+    <div class="guidance-box">
+        <h3>📋 CPT 99309 Documentation Support - High Risk Factors Identified</h3>
+        <ul>
+            <li><strong>Anticoagulation (Dabigatran):</strong> Increased risk of bleeding, falls risk, requires monitoring for bruising/hemorrhage</li>
+            <li><strong>Antiarrhythmic (Amiodarone):</strong> Requires monitoring for thyroid dysfunction, pulmonary toxicity, hepatotoxicity, bradycardia. <em>Check TSH, LFTs, CXR annually</em></li>
+            <li><strong>Diabetes Medications (Glimepiride, Mounjaro):</strong> Risk of hypoglycemia, especially with reduced oral intake. <em>Monitor A1c, blood glucose logs</em></li>
+            <li><strong>Diuretics (Bumetanide):</strong> Risk of hypotension, electrolyte imbalance, dehydration, acute kidney injury. <em>Check BMP, monitor weight</em></li>
+            <li><strong>Antihypertensives (Entresto, Losartan):</strong> Risk of hypotension, hyperkalemia, angioedema, renal impairment. <em>Check BMP, potassium</em></li>
+            <li><strong>Cardiac Conditions (HF, AFib, HTN):</strong> Risk of exacerbation, fluid overload, arrhythmias, falls from hypotension</li>
+            <li><strong>Polypharmacy (14+ medications):</strong> Increased risk of drug interactions, adverse effects, medication errors</li>
+            <li><strong>Morbid Obesity (BMI 59.3):</strong> Impacts mobility, skin integrity, medication dosing, fall risk</li>
+            <li><strong>History of Falls:</strong> Significantly increased risk with anticoagulation and hypotensive agents</li>
+        </ul>
+        <p style="margin: 8px 0 0 0; font-style: italic;">✓ These factors support medical necessity for CPT 99309 (high complexity, 45-59 minutes) vs 99308 (moderate complexity)</p>
+    </div>
+    <hr>
+    <footer>🔍 CPT 99309 documentation support: High-risk medications (anticoagulation, amiodarone, insulin, diuretics) and conditions (HF, HTN, DM, fall risk) automatically identified. Includes medication-specific monitoring recommendations.</footer>
+</div>
+
+<script>
+    (function() {
+        // ----- DOM elements -----
+        const inputTextarea = document.getElementById('inputText');
+        const outputTextarea = document.getElementById('outputText');
+        const generateBtn = document.getElementById('generateBtn');
+        const resetSampleBtn = document.getElementById('resetToSampleBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyButton');
+        const copyConfirmSpan = document.getElementById('copyConfirm');
+        const riskFactorsDisplay = document.getElementById('riskFactorsDisplay');
+        const visitTypeSelect = document.getElementById('visitTypeSelect');
+
+        // ----- stored sample (same as preloaded) -----
+        const SAMPLE_INPUT = `Doe, Jane (12345)
+DOB: 01/15/1955
+DOS: 02/14/2026
+Gender: Female
+
+71yo f. Vital Sign	Recent Value	Date	Time
+Weight:	390.2	2/13/2026	20:58
+Blood Pressure:	165 /  73	2/14/2026	09:39
+Temperature:	98.0	2/14/2026	09:38
+Pulse:	69	2/14/2026	09:39
+Respirations:	17	2/14/2026	09:39
+O2 sats:	95.0 %	2/14/2026	09:39
+Height:	68.0	2/13/2026	16:42
+Pain Level:	0
+
+Medications:
+Baclofen Oral Tablet 10 MG
+
+Diagnoses:
+I10	HYPERTENSION
+F32.9	MAJOR DEPRESSIVE DISORDER, SINGLE EPISODE, UNSPECIFIED
+Z91.81	HISTORY OF FALLING
+M82.62  GMW
+
+ALLERGIES: NKDA`;
+
+        // ----- helper: reset sample -----
+        function resetToSample() {
+            inputTextarea.value = SAMPLE_INPUT;
+        }
+
+// ----- Updated Function to extract patient demographics -----
+        function extractDemographics(text) {
+            const demographics = {
+                name: '',
+                dob: ' ',
+                dos: ' ',
+                gender: ' '
+            };
+
+            // 1. Extract Name and MRN using the "Status" anchor
+            const anchor = "Status:";
+            const anchor2 = "Page # 1";
+            const statusIndex = text.indexOf(anchor);
+	    const pagenumIndex = text.indexOf(anchor2);
+ 	    const fullName = text.substring(130, 152);
+	    if (anchor2) {
+		demographics.name =  fullName  ;
+            }
+         
+                   
+                    
+                    
+                
+           
+
+            // 2. Extract DOB (Handles formats like Birth Date: 1/1/1948)
+            const dobMatch = text.match(/Birth\s*Date:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) ||
+                            text.match(/Date\s*of\s*Birth:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
+            if (dobMatch) {
+                demographics.dob = dobMatch[1];
+            }
+            
+            // 3. Set DOS (Default to Today)
+            const today = new Date();
+            demographics.dos = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
+            
+            // 4. Extract Gender
+            const genderMatch = text.match(/Gender:\s*(\w+)/i);
+            if (genderMatch) {
+                let gender = genderMatch[1].trim();
+                demographics.gender = gender.toLowerCase().startsWith('f') ? 'Female' : 'Male';
+            }
+            
+            return demographics;
+        }
+            
+
+
+        // ----- Function to calculate BMI from weight and height -----
+        function calculateBMI(weightLbs, heightInches) {
+            if (!weightLbs || !heightInches) return null;
+            
+            // Convert weight from string to number (remove "lbs" if present)
+            let weight = parseFloat(weightLbs.toString().replace(/[^\d.]/g, ''));
+            let height = parseFloat(heightInches.toString().replace(/[^\d.]/g, ''));
+            
+            if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) return null;
+            
+            // BMI formula: (weight in lbs * 703) / (height in inches)^2
+            const bmi = (weight * 703) / (height * height);
+            return Math.round(bmi * 10) / 10; // Round to 1 decimal place
+        }
+
+        // ----- Function to get medication-specific monitoring recommendations -----
+        function getMedicationMonitoring(medications) {
+            const recommendations = [];
+            const medText = medications.join(' ').toLowerCase();
+            
+            // Define medication monitoring guidelines
+            const monitoringMap = [
+                { 
+                    pattern: /amiodarone|cordarone/i, 
+                    recommendation: "Amiodarone: Due to high risk of thyroid dysfunction, pulmonary toxicity, and hepatotoxicity, benefits outweigh risks. Recommended monitoring: TSH, LFTs, and CXR annually."
+                },
+                { 
+                    pattern: /dabigatran|pradaxa|warfarin|coumadin|apixaban|eliquis|rivaroxaban|xarelto|anticoagulation/i, 
+                    recommendation: "Anticoagulation: Due to high bleeding risk, particularly with falls history, benefits outweigh risks for thromboembolism prevention. Recommended monitoring: Signs of bleeding, INR if on warfarin, renal function annually."
+                },
+                { 
+                    pattern: /insulin|lantus|humalog|novolog|glargine|lispro|glimepiride|glipizide|glyburide|sulfonylurea|mounjaro|tirzepatide|ozempic|semaglutide|trulicity|dulaglutide|glp-1|metformin/i, 
+                    recommendation: "Diabetes medications: Due to hypoglycemia risk, especially with reduced oral intake, benefits outweigh risks for glycemic control. Recommended monitoring: A1c every 3-6 months, blood glucose logs, hypoglycemia education."
+                },
+                { 
+                    pattern: /bumetanide|furosemide|lasix|torsemide|diuretic/i, 
+                    recommendation: "Diuretics: Due to risk of hypotension, electrolyte imbalance, and dehydration, benefits outweigh risks for fluid management. Recommended monitoring: BMP, weight, signs of dehydration."
+                },
+                { 
+                    pattern: /entresto|sacubitril|valsartan|losartan|lisinopril|ace|arb|antihypertensive/i, 
+                    recommendation: "Antihypertensives: Due to risk of hypotension, hyperkalemia, and renal impairment, benefits outweigh risks for cardiovascular protection. Recommended monitoring: BMP, potassium, blood pressure."
+                },
+                { 
+                    pattern: /levothyroxine|synthroid/i, 
+                    recommendation: "Levothyroxine: Benefits outweigh risks for thyroid replacement. Recommended monitoring: TSH every 6-12 months."
+                },
+                { 
+                    pattern: /duloxetine|cymbalta|ssri|snri|antidepressant/i, 
+                    recommendation: "Antidepressants: Benefits outweigh risks for mood stabilization. Recommended monitoring: Mood, suicidal ideation, side effects."
+                },
+                { 
+                    pattern: /tramadol|opioid|narcotic/i, 
+                    recommendation: "Opioid medication: Due to risk of sedation, falls, and dependence, benefits outweigh risks for pain management. Recommended monitoring: Pain scores, sedation level, bowel function."
+                },
+                { 
+                    pattern: /hydroxychloroquine|plaquenil/i, 
+                    recommendation: "Hydroxychloroquine: Due to risk of retinopathy, benefits outweigh risks for disease management. Recommended monitoring: Annual eye exam by ophthalmology."
+                },
+                { 
+                    pattern: /methotrexate/i, 
+                    recommendation: "Methotrexate: Due to risk of hepatotoxicity and myelosuppression, benefits outweigh risks. Recommended monitoring: LFTs, CBC, renal function every 2-3 months."
+                },
+                { 
+                    pattern: /prednisone|steroid|corticosteroid/i, 
+                    recommendation: "Corticosteroids: Due to risk of hyperglycemia, osteoporosis, immunosuppression, benefits outweigh risks. Recommended monitoring: Blood glucose, bone density, signs of infection."
+                },
+                { 
+                    pattern: /digoxin|lanoxin/i, 
+                    recommendation: "Digoxin: Due to narrow therapeutic index and toxicity risk, benefits outweigh risks for rate control. Recommended monitoring: Digoxin levels, renal function, potassium, magnesium."
+                },
+                { 
+                    pattern: /lithium/i, 
+                    recommendation: "Lithium: Due to narrow therapeutic index and toxicity risk, benefits outweigh risks for mood stabilization. Recommended monitoring: Lithium levels, renal function, thyroid function every 3-6 months."
+                }
+            ];
+            
+            for (const item of monitoringMap) {
+                if (item.pattern.test(medText)) {
+                    recommendations.push(item.recommendation);
+                }
+            }
+            
+            // Remove duplicates and return
+            return [...new Set(recommendations)];
+        }
+
+        // ----- Function to identify risk factors from medications and diagnoses -----
+        function identifyRiskFactors(medications, diagnoses, text) {
+            const riskFactors = [];
+            const textLower = text.toLowerCase();
+            
+            // High-risk medications
+            const highRiskMeds = [
+                { pattern: /dabigatran|pradaxa|warfarin|coumadin|apixaban|eliquis|rivaroxaban|xarelto|anticoagulation/i, name: 'Anticoagulation' },
+                { pattern: /amiodarone|cordarone|antiarrhythmic/i, name: 'Amiodarone' },
+                { pattern: /insulin|lantus|humalog|novolog|glargine|lispro/i, name: 'Insulin' },
+                { pattern: /glimepiride|glipizide|glyburide|sulfonylurea/i, name: 'Diabetes meds (hypoglycemia risk)' },
+                { pattern: /mounjaro|tirzepatide|ozempic|semaglutide|trulicity|dulaglutide|glp-1/i, name: 'GLP-1 agonist' },
+                { pattern: /bumetanide|furosemide|lasix|torsemide|diuretic/i, name: 'Diuretics' },
+                { pattern: /entresto|sacubitril|valsartan|losartan|lisinopril|ACE|ARB|antihypertensive/i, name: 'Antihypertensives' },
+                { pattern: /metformin/i, name: 'Metformin' },
+                { pattern: /digoxin|lanoxin/i, name: 'Digoxin' },
+                { pattern: /lithium/i, name: 'Lithium' },
+                { pattern: /methotrexate/i, name: 'Methotrexate' },
+                { pattern: /prednisone|steroid|corticosteroid/i, name: 'Corticosteroids' },
+                { pattern: /opioid|tramadol|morphine|oxycodone|hydrocodone|fentanyl/i, name: 'Opioids' },
+                { pattern: /hydroxychloroquine|plaquenil/i, name: 'Hydroxychloroquine' }
+            ];
+            
+            // Check medications array (strings)
+            for (const med of medications) {
+                const medLower = med.toLowerCase();
+                for (const risk of highRiskMeds) {
+                    if (risk.pattern.test(medLower) && !riskFactors.includes(risk.name)) {
+                        riskFactors.push(risk.name);
+                    }
+                }
+            }
+            
+            // Also check raw text for medications not captured in array
+            for (const risk of highRiskMeds) {
+                if (risk.pattern.test(textLower) && !riskFactors.includes(risk.name)) {
+                    riskFactors.push(risk.name);
+                }
+            }
+            
+            // High-risk conditions
+            const highRiskConditions = [
+                { pattern: /heart failure|hf|chf|i50|i11/i, name: 'Heart failure' },
+                { pattern: /atrial fibrillation|afib|af|i48/i, name: 'Atrial fibrillation' },
+                { pattern: /hypertension|htn|high blood pressure|i10|i11/i, name: 'Hypertension' },
+                { pattern: /diabetes|dm|e11|e10|type 2|type 1/i, name: 'Diabetes mellitus' },
+                { pattern: /ckd|chronic kidney|renal failure|n18|n19/i, name: 'CKD' },
+                { pattern: /copd|chronic obstructive|j44/i, name: 'COPD' },
+                { pattern: /obesity|bmi|e66|morbid obesity/i, name: 'Morbid obesity' },
+                { pattern: /fall|z91.81|history of falling/i, name: 'Fall history' },
+                { pattern: /dvt|pe|thrombosis|embolism|z86.718/i, name: 'Thrombosis history' },
+                { pattern: /anemia|d64|low hemoglobin/i, name: 'Anemia' },
+                { pattern: /hypotension|low blood pressure/i, name: 'Hypotension risk' },
+                { pattern: /hypoglycemia|low blood sugar/i, name: 'Hypoglycemia risk' },
+                { pattern: /dementia|alzheimer|f00|f01|f02|f03/i, name: 'Dementia' },
+                { pattern: /parkinson|g20/i, name: 'Parkinson\'s' },
+                { pattern: /seizure|epilepsy|g40/i, name: 'Seizure disorder' }
+            ];
+            
+            for (const condition of highRiskConditions) {
+                if (condition.pattern.test(textLower) && !riskFactors.includes(condition.name)) {
+                    riskFactors.push(condition.name);
+                }
+            }
+            
+            // Polypharmacy risk (count medications)
+            if (medications.length >= 10) {
+                riskFactors.push(`Polypharmacy (${medications.length}+ meds)`);
+            } else if (medications.length >= 5) {
+                riskFactors.push(`Polypharmacy (${medications.length} meds)`);
+            }
+            
+            // Check for elevated BP (hypertension)
+            const bpMatch = text.match(/(?:Blood\s*Pressure|BP):?\s*(\d{2,3})\s*\/\s*(\d{2,3})/i);
+            if (bpMatch) {
+                const systolic = parseInt(bpMatch[1]);
+                if (systolic >= 160) {
+                    if (!riskFactors.includes('Severe hypertension')) riskFactors.push('Severe hypertension');
+                }
+            }
+            
+            // Check for low BP (hypotension)
+            if (bpMatch) {
+                const systolic = parseInt(bpMatch[1]);
+                if (systolic <= 90) {
+                    if (!riskFactors.includes('Hypotension')) riskFactors.push('Hypotension');
+                }
+            }
+            
+            // Check for bradycardia
+            const pulseMatch = text.match(/(?:Pulse|HR):?\s*(\d{2,3})/i);
+            if (pulseMatch) {
+                const pulse = parseInt(pulseMatch[1]);
+                if (pulse <= 50) {
+                    if (!riskFactors.includes('Bradycardia')) riskFactors.push('Bradycardia');
+                }
+            }
+            
+            // Remove duplicates and return
+            return [...new Set(riskFactors)];
+        }
+
+        // ----- Function to extract PMH abbreviations from diagnosis descriptions -----
+        function extractPMHAbbreviations(diagnosisDescriptions) {
+            // Common medical abbreviations mapping
+            const abbreviationMap = {
+                'ATRIAL FIBRILLATION': 'AFib',
+                'PAROXYSMAL ATRIAL FIBRILLATION': 'PAF',
+                'ATRIAL FLUTTER': 'AFL',
+                'HEART FAILURE': 'HF',
+                'HYPERTENSIVE HEART DISEASE': 'HHD',
+                'CHRONIC OBSTRUCTIVE PULMONARY DISEASE': 'COPD',
+                'TYPE 2 DIABETES MELLITUS': 'DM2',
+                'DIABETES': 'DM',
+                'HYPOTHYROIDISM': 'Hypothyroid',
+                'HYPERLIPIDEMIA': 'HLD',
+                'OBESITY': 'Obesity',
+                'MORBID OBESITY': 'Morbid Obesity',
+                'LYMPHEDEMA': 'Lymphedema',
+                'ANEMIA': 'Anemia',
+                'GERD': 'GERD',
+                'GASTRO-ESOPHAGEAL REFLUX DISEASE': 'GERD',
+                'DEPRESSIVE DISORDER': 'Depression',
+                'MAJOR DEPRESSIVE DISORDER': 'MDD',
+                'ANXIETY': 'Anxiety',
+                'ADJUSTMENT DISORDER': 'Adjustment D/O',
+                'HISTORY OF FALLING': 'Falls Hx',
+                'NICOTINE DEPENDENCE': 'Tobacco Hx',
+                'URINARY TRACT INFECTIONS': 'UTI Hx',
+                'VENOUS THROMBOSIS': 'DVT/PE Hx',
+                'THROMBOSIS': 'Thrombosis Hx',
+                'EMBOLISM': 'Embolism Hx'
+            };
+            
+            const abbreviations = [];
+            
+            for (const desc of diagnosisDescriptions) {
+                const upperDesc = desc.toUpperCase();
+                
+                // Check for exact matches in the map
+                for (const [key, value] of Object.entries(abbreviationMap)) {
+                    if (upperDesc.includes(key)) {
+                        if (!abbreviations.includes(value)) {
+                            abbreviations.push(value);
+                        }
+                        break;
+                    }
+                }
+                
+                // Also try to create simple abbreviations from common words
+                if (upperDesc.includes('HYPERTENSION') || upperDesc.includes('HTN')) {
+                    if (!abbreviations.includes('HTN')) abbreviations.push('HTN');
+                }
+                if (upperDesc.includes('DYSLIPIDEMIA')) {
+                    if (!abbreviations.includes('HLD')) abbreviations.push('HLD');
+                }
+                if (upperDesc.includes('OSTEOPOROSIS')) {
+                    if (!abbreviations.includes('Osteoporosis')) abbreviations.push('Osteoporosis');
+                }
+                if (upperDesc.includes('ARTHRITIS')) {
+                    if (!abbreviations.includes('Arthritis')) abbreviations.push('Arthritis');
+                }
+                if (upperDesc.includes('CKD') || upperDesc.includes('CHRONIC KIDNEY')) {
+                    if (!abbreviations.includes('CKD')) abbreviations.push('CKD');
+                }
+                if (upperDesc.includes('CAD') || upperDesc.includes('CORONARY ARTERY')) {
+                    if (!abbreviations.includes('CAD')) abbreviations.push('CAD');
+                }
+                if (upperDesc.includes('MI') || upperDesc.includes('MYOCARDIAL INFARCTION')) {
+                    if (!abbreviations.includes('MI')) abbreviations.push('MI');
+                }
+                if (upperDesc.includes('CVA') || upperDesc.includes('STROKE')) {
+                    if (!abbreviations.includes('CVA')) abbreviations.push('CVA');
+                }
+                if (upperDesc.includes('TIA')) {
+                    if (!abbreviations.includes('TIA')) abbreviations.push('TIA');
+                }
+                if (upperDesc.includes('PVD') || upperDesc.includes('PERIPHERAL VASCULAR')) {
+                    if (!abbreviations.includes('PVD')) abbreviations.push('PVD');
+                }
+                if (upperDesc.includes('DEMENTIA')) {
+                    if (!abbreviations.includes('Dementia')) abbreviations.push('Dementia');
+                }
+                if (upperDesc.includes('PARKINSON')) {
+                    if (!abbreviations.includes('Parkinson\'s')) abbreviations.push('Parkinson\'s');
+                }
+            }
+            
+            // Remove duplicates and limit to 10
+            return [...new Set(abbreviations)].slice(0, 10);
+        }
+
+        // ----- Function to get visit type text -----
+        function getVisitTypeText(visitType) {
+            switch(visitType) {
+                case 'abn_lab':
+                    return "Pt was seen for abnormal lab. Result noted. Significant for the following: ";
+                case 'fall':
+                    return "Pt was seen for a fall. Details noted. Case discussed with the staff. Medications reviewed. ";
+                case 'urgent':
+                    return "Pt was seen in an urgent visit per staff request. ";
+                case 'annual':
+                    return "Pt was seen for an annual followup visit, regulatory visit. Case discussed with the staff. Meds and lab results were reviewed. ";
+                case 'regulatory':
+                    return "Pt was seen in a regulatory visit. ";
+                case 'capacity':
+                    return "Pt was seen per staff request for capacity evalation. Chart notes were reviewed. Meds and lab result were reviewed. BIMS score: . PQH9 score: . ";
+
+                case 'telemed':
+                    return "Pt was seen in a telemedicine visit. Telemedicine equipment was used. Nurse was present at patient bedside. ";
+
+                case 'family':
+                    return "Pt was seen per staff request. Family has some questions. All questions were answered to their satisfaction";
+   
+                case 'followup':
+                    return "Seen today in a followup visit. Pt tolerates meds and meals. No concerns at this time. ";
+
+                default:
+                    return "Seen today in a followup visit. Pt tolerates meds and meals. No concerns at this time. ";
+            }
+        }
+
+        // ----- main extraction and formatting function -----
+        function generateNoteFromInput(input) {
+            // Normalize line breaks
+            const text = input.replace(/\r\n/g, '\n');
+            
+            // Get demographics
+            const demographics = extractDemographics(text);
+            
+            // Get visit type text
+            const visitType = visitTypeSelect.value;
+            const visitTypeText = getVisitTypeText(visitType);
+
+            // ----- 1. ALLERGIES -----
+            let allergies = 'NKDA'; // default
+            const allergyMatch = text.match(/ALLERGIES?:\s*(.+?)(?:\n\s*\n|\n[A-Z]|$)/is);
+            if (allergyMatch) {
+                let raw = allergyMatch[1].trim();
+                if (raw && !/NKA|NKDA|No Known/i.test(raw)) {
+                    allergies = raw.split('\n')[0].trim();
+                } else {
+                    allergies = 'NKDA';
+                }
+            } else {
+                if (/NKA|NKDA|No Known Drug Allergies/i.test(text)) allergies = 'NKDA';
+            }
+
+            // ----- 2. MEDICATIONS -----
+            const medSet = new Set();
+            const medFullList = []; // For risk factor analysis
+            
+            // Method 1: Look for lines after "Medications:" heading
+            const medSectionMatch = text.match(/Medications?:?\s*\n([\s\S]+?)(?:\n\s*\n|\n[A-Z][a-z]+:|$)/i);
+            if (medSectionMatch) {
+                const medSection = medSectionMatch[1];
+                const medLines = medSection.split('\n');
+                
+                for (let line of medLines) {
+                    line = line.trim();
+                    // Skip empty lines or lines that look like headings/diagnoses
+                    if (!line || line.includes('Diagnoses') || line.includes('ALLERGIES')) continue;
+                    
+                    // Look for medication patterns (contains drug name + MG/ML/MCG)
+                    if (/\d+\s*(MG|MCG|ML|UNIT)/i.test(line) && !/aplisol|ppd/i.test(line)) {
+                        medFullList.push(line); // Store full line for risk analysis
+                        
+                        // Extract just the drug name (before the dosage)
+                        const match = line.match(/^([A-Za-z0-9\-\(\)]+(?: [A-Za-z0-9\-\(\)]+)*?)\s+\d/i);
+                        if (match) {
+                            medSet.add(match[1].trim());
+                        } else {
+                            // Fallback: take first 2-3 words
+                            const words = line.split(/\s+/);
+                            let name = words.slice(0, Math.min(3, words.length)).join(' ');
+                            medSet.add(name);
+                        }
+                    }
+                }
+            }
+            
+            // Method 2: Scan entire text for medication patterns (backup)
+            if (medSet.size === 0) {
+                const medRegex = /([A-Z][a-z]+(?:[\s\-][A-Z][a-z]+)*[\s\-]?[A-Z][a-z]*)\s+\d+\s*(MG|MCG|ML|UNIT)/gi;
+                let match;
+                while ((match = medRegex.exec(text)) !== null) {
+                    let medName = match[1].trim();
+                    if (!/aplisol|ppd/i.test(medName) && medName.length > 2) {
+                        medSet.add(medName);
+                        medFullList.push(match[0]); // Store full match
+                    }
+                }
+            }
+            
+            // Convert set to array and limit to 8 items
+            const medArray = Array.from(medSet).slice(0, 8);
+            const medString = medArray.length > 0 ? medArray.join(', ') : 'None listed';
+
+            // ----- 3. VITALS (ordered) with BMI calculation -----
+            const vitals = {};
+            
+            // Extract BP
+            const bpMatch = text.match(/(?:Blood\s*Pressure|BP):?\s*(\d{2,3})\s*\/\s*(\d{2,3})/i);
+            if (bpMatch) vitals['BP'] = `${bpMatch[1]}/${bpMatch[2]}`;
+            
+            // Extract Pulse/HR
+            const pulseMatch = text.match(/(?:Pulse|HR):?\s*(\d{2,3})/i);
+            if (pulseMatch) vitals['Pulse'] = pulseMatch[1];
+            
+            // Extract Temperature
+            const tempMatch = text.match(/(?:Temp(?:erature)?):?\s*(\d{2,3}\.\d)/i);
+            if (tempMatch) vitals['Temp'] = tempMatch[1] + '°F';
+            
+            // Extract Respirations
+            const respMatch = text.match(/(?:Resp(?:irations)?|RR):?\s*(\d{2,3})/i);
+            if (respMatch) vitals['Resp'] = respMatch[1];
+            
+            // Extract O2 Sats
+            const o2Match = text.match(/(?:O2\s*sats?|O2\s*Sat):?\s*(\d{2,3}\.?\d?)\s*%/i);
+            if (o2Match) vitals['O2 Sats'] = o2Match[1] + '%';
+            
+            // Extract Weight
+            let weightValue = null;
+            const weightMatch = text.match(/Weight:?\s*(\d{3}\.?\d?\s*lbs)/i);
+            if (weightMatch) {
+                vitals['Weight'] = weightMatch[1];
+                weightValue = weightMatch[1];
+            }
+            
+            // Extract Height
+            let heightValue = null;
+            const heightMatch = text.match(/Height:?\s*(\d{2}\.?\d?\s*(?:in|inch|inches)?)/i);
+            if (heightMatch) {
+                vitals['Height'] = heightMatch[1];
+                heightValue = heightMatch[1];
+            }
+            
+            // Extract BMI (from text or calculate)
+            const bmiMatch = text.match(/BMI:?\s*(\d{2}\.?\d?)/i);
+            if (bmiMatch) {
+                vitals['BMI'] = bmiMatch[1];
+            } else if (weightValue && heightValue) {
+                // Calculate BMI from weight and height
+                const calculatedBMI = calculateBMI(weightValue, heightValue);
+                if (calculatedBMI) {
+                    vitals['BMI'] = calculatedBMI.toString();
+                }
+            }
+            
+            // Extract Pain
+            const painMatch = text.match(/Pain(?:\s*Level)?:?\s*(\d{1,2})\/10/i);
+            if (painMatch) vitals['Pain'] = painMatch[1] + '/10';
+
+            const order = ['BP', 'Pulse', 'Temp', 'Resp', 'O2 Sats', 'Weight', 'Height', 'BMI', 'Pain'];
+            const vitalParts = [];
+            for (let k of order) {
+                if (vitals[k]) vitalParts.push(`${k}: ${vitals[k]}`);
+            }
+            const vitalString = vitalParts.length > 0 ? vitalParts.join('; ') : 'Vitals incomplete';
+
+            // ----- 4. DIAGNOSES (ICD10 + description) AND PMH -----
+            const dxSet = new Set();
+            const dxCodeOnlySet = new Set(); // For ICD10 codes only
+            const diagnosisDescriptions = [];
+            
+            // Look for ICD10 patterns (letter + 2 digits + . + digits)
+            const dxRegex = /([A-Z]\d{2}\.\d+)\s+([A-Z][A-Z\s\(\)\-]+)/g;
+            let dxMatch;
+            while ((dxMatch = dxRegex.exec(text)) !== null) {
+                let code = dxMatch[1].trim();
+                let desc = dxMatch[2].trim();
+                // Clean up description
+                desc = desc.replace(/\s+/g, ' ').trim();
+                dxSet.add(`${code} - ${desc}`);
+                dxCodeOnlySet.add(code);
+                diagnosisDescriptions.push(desc);
+            }
+            
+            // Also look for numeric ICD10 codes
+            const dxNumRegex = /(\d{3}\.\d+)\s+([A-Z][A-Z\s\(\)\-]+)/g;
+            while ((dxMatch = dxNumRegex.exec(text)) !== null) {
+                let code = dxMatch[1].trim();
+                let desc = dxMatch[2].trim();
+                desc = desc.replace(/\s+/g, ' ').trim();
+                dxSet.add(`${code} - ${desc}`);
+                dxCodeOnlySet.add(code);
+                diagnosisDescriptions.push(desc);
+            }
+            
+            const dxArray = Array.from(dxSet).slice(0, 15);
+            
+            // Format diagnoses as numbered list
+            let dxNumberedList = '';
+            if (dxArray.length > 0) {
+                dxNumberedList = dxArray.map((dx, index) => `${index + 1}. ${dx}`).join('\n');
+            } else {
+                dxNumberedList = 'none recorded';
+            }
+            
+            // Get top 5 ICD10 codes only (no descriptions)
+            const dxCodeArray = Array.from(dxCodeOnlySet).slice(0, 5);
+            const dxCodeString = dxCodeArray.length > 0 ? dxCodeArray.join(', ') : 'none';
+            
+            // ----- 5. PMH (Past Medical History) abbreviations -----
+            const pmhAbbreviations = extractPMHAbbreviations(diagnosisDescriptions);
+            
+            // Check for surgical history in the text
+            let pshString = 'None reported';
+            const pshMatch = text.match(/PAST\s+SURGICAL\s+HISTORY:?\s*\n([\s\S]+?)(?:\n\s*\n|\n[A-Z][a-z]+:|$)/i);
+            if (pshMatch) {
+                const pshText = pshMatch[1].trim();
+                if (pshText && pshText !== '..' && pshText !== '...' && pshText !== 'None reported') {
+                    pshString = pshText.split('\n')[0].trim();
+                }
+            }
+            
+            // Format PMH string
+            const pmhString = pmhAbbreviations.length > 0 ? pmhAbbreviations.join(', ') : 'None listed';
+            
+            // ----- 6. RISK FACTORS (for display and documentation) -----
+            const riskFactors = identifyRiskFactors(medFullList, diagnosisDescriptions, text);
+            
+            // Format risk factors for display
+            const riskDisplayString = riskFactors.slice(0, 8).join(', ') + (riskFactors.length > 8 ? '...' : '');
+            if (riskFactorsDisplay) {
+                riskFactorsDisplay.textContent = riskDisplayString || 'None identified';
+            }
+            
+            // Create risk factor documentation text
+            let riskDocText = '';
+            if (riskFactors.length > 0) {
+                riskDocText = `\nHigh-risk factors present: ${riskFactors.slice(0, 10).join(', ')}. These factors increase risk of bleeding, falls, hypotension, hypoglycemia, and drug interactions, supporting medical necessity for comprehensive evaluation and management (CPT 99309).`;
+            }
+            
+            // ----- 7. MEDICATION MONITORING RECOMMENDATIONS -----
+            const monitoringRecs = getMedicationMonitoring(medFullList);
+            let monitoringText = '';
+            if (monitoringRecs.length > 0) {
+                monitoringText = '\n\nMedication Monitoring Recommendations:\n- ' + monitoringRecs.slice(0, 5).join('\n- ');
+            }
+
+            // ----- 8. PHYSICAL EXAM (template) -----
+            const physicalExam = `Physical Exam:
+General: appears comfortable at rest, in no acute distress.
+HEENT: Normocephalic, atraumatic. Mucous membranes moist. No epistaxis.
+Neck: Supple. No JVD noted.
+Lungs: Normal respiratory rate. No Audible wheezes, normal effort.
+Heart: Normal heart rate.
+Abdomen: Non-distended.
+Extremities: No cyanosis.
+Skin: Warm, dry, intact. 
+Neurological: No focal deficit.`;
+
+            // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan -----
+            return `Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.dos} | Gender: ${demographics.gender}
+
+CC: ${visitType}
+
+Subjective:
+${visitTypeText}${visitType === 'other' ? '' : ''} 
+Case d/w the staff. No concerns per staff report. 
+
+PMH/PSH: ${pmhString}.
+Allergies: ${allergies}.
+Medications: ${medString}.
+
+VS: ${vitalString}.
+
+${physicalExam}
+
+Assessment:
+${dxNumberedList}
+
+Plan:
+- Will continue supportive care, current medications with close monitoring for hypotension, hypoglycemia, bleeding, and falls.
+- Continue current diet and skincare monitoring.
+- Fall precautions.
+- Recommended labs per monitoring guidelines.
+- Follow up per protocol or as need arise.
+
+CPT code: 99309
+
+Risk Assessment: Patient on multiple high-risk medications - Polypharmacy (${medFullList.length}+ medications) increases risk of drug interactions and adverse effects.${riskFactors.length > 0 ? ' Additional risks: ' + riskFactors.slice(0, 8).join(', ') + '.' : ''}${monitoringText}
+
+ICD10 Codes: ${dxCodeString}.`;
+        }
+
+        // ----- update output -----
+        function updateOutput() {
+            const input = inputTextarea.value;
+            const output = generateNoteFromInput(input);
+            outputTextarea.value = output;
+            copyConfirmSpan.classList.remove('show');
+        }
+
+        // ----- clear output -----
+        function clearOutput() {
+            outputTextarea.value = '';
+            copyConfirmSpan.classList.remove('show');
+        }
+
+        // ----- copy to clipboard -----
+        function copyOutput() {
+            if (!outputTextarea.value.trim()) {
+                alert('Nothing to copy — generate a note first.');
+                return;
+            }
+            outputTextarea.select();
+            document.execCommand('copy');
+            // deselect
+            window.getSelection().removeAllRanges();
+            // show confirmation
+            copyConfirmSpan.classList.add('show');
+            setTimeout(() => copyConfirmSpan.classList.remove('show'), 2000);
+        }
+
+        // ----- event listeners -----
+        generateBtn.addEventListener('click', updateOutput);
+        resetSampleBtn.addEventListener('click', () => {
+            resetToSample();
+            updateOutput(); // auto-generate after reset
+        });
+        clearBtn.addEventListener('click', clearOutput);
+        copyBtn.addEventListener('click', copyOutput);
+
+        // on page load: generate from sample (prefilled)
+        window.addEventListener('load', () => {
+            // ensure sample is exactly there, then generate
+            resetToSample();
+            updateOutput();
+        });
+    })();
+</script>
+</body>
+</html>
