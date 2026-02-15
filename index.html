@@ -365,17 +365,16 @@ ALLERGIES: NKDA`;
             // 1. Extract Name and MRN using the "Status" anchor
             const anchor = "Status:";
             const anchor2 = "Page # 1";
+			const statusIndex = text.indexOf(anchor);
+	        const pagenumIndex = text.indexOf(anchor2);
+            const endExtraction = text.indexOf(anchor);
+	        const startExtraction = text.indexOf(anchor2)+8;
+ 	        const fullName = text.substring(132, 152).trim();
+			
+		    if (anchor2) {
+				demographics.name =  fullName + ' '+ statusIndex + ' '+ pagenumIndex;
+        	    }
 
-			if (startIndex !== -1 && endIndex !== -1) {
-				// The name starts AFTER "Page # 1", so add the length of that string (8)
-    const startPos = startIndex + anchorStart.length;
-				// Extract from startPos to endIndex
-    // .trim() is vital because there are often multiple spaces/newlines between them
-    const extractedContent = text.substring(startPos, endIndex).trim();
-				/ 4. Assign to demographics
-    // This will result in "Adams, Adam(12345)" based on your text
-    demographics.name = `Full name: ${extractedContent}`;
-			}
      
             // 2. Extract DOB (Handles formats like Birth Date: 1/1/1948)
             const dobMatch = text.match(/Birth\s*Date:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) ||
