@@ -355,7 +355,7 @@ ALLERGIES: NKDA`;
             inputTextarea.value = SAMPLE_INPUT;
         }
 
-// ----- Updated Function to extract patient demographics -----
+// ----- Updated Function to extract patient demographics ----
         function extractDemographics(text) {
             const demographics = {
                 name: '',
@@ -366,17 +366,22 @@ ALLERGIES: NKDA`;
                 gender: ' '
             };
 
-            // 0.1. Extract Date of Admission DOA   //Date (MDS):
-            const dobMatch01 = text.match(/(MDS):\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) );
-            if (dobMatch01) {
-                demographics.doa = dobMatch01[1];
-            }
-			
-			// 0.2. Extract Date of Service DOE
-            const dobMatch012= text.match(/2026\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) );
-            if (dobMatch02) {
-                demographics.doe = dobMatch02[1];
-            }
+            // 0.1. Extract Date of Admission (DOA)  // Date (MDS):
+            const anchr = "Admission";
+            const anchrlast = "Birth";
+            const doaMatch0 = text.indexOf(anchr);
+            const doaMatch1 = text.indexOf(anchrlast);
+            const doaMatch2 = doaMatch1 - 14;
+            const doaMatch = text.substring(doaMatch2, doaMatch1).trim();
+			if (doaMatch) {
+               demographics.doa = "Date of Admisison: "+doaMatch;
+           }
+
+           // 0.2. Extract Date of Service (DOE)
+           const doeMatch = text.substring(6, 20).trim();
+           if (doeMatch) {
+               demographics.doe = doeMatch;
+           }
 			// 1. Extract Name and MRN using the "Status" anchor
             const anchor = "Status:";
             const anchor2 = "Page # 1";
@@ -967,7 +972,7 @@ Skin: Warm, dry, intact.
 Neurological: No focal deficit.`;
 
             // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan -----
-            return `Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.dos} | Gender: ${demographics.gender}
+            return `Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | ${demographics.doa}
 
 CC: ${visitType}
 
@@ -1000,8 +1005,11 @@ Risk Assessment: Patient on multiple high-risk medications - Polypharmacy (${med
 
 ICD10 Codes: ${dxCodeString}.
 
-NGA  ${demographics.doe} |  ${demographics.doa} 
-Billing: ${demographics.dos}|${demographics.name}|${demographics.dob}|| ${dxCodeString}| 99309`;
+NGA    
+========
+Billing: 
+========
+${demographics.doe}|${demographics.name}|${demographics.dob}|| ${dxCodeString}| 99309`;
         }
 
         // ----- update output -----
