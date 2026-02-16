@@ -361,10 +361,23 @@ ALLERGIES: NKDA`;
                 name: '',
                 dob: ' ',
                 dos: ' ',
+				doa: ' ',
+                doe: ' ',				
                 gender: ' '
             };
 
-            // 1. Extract Name and MRN using the "Status" anchor
+            // 0.1. Extract Date of Admission DOA   //Date (MDS):
+            const dobMatch01 = text.match(/(MDS):\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) );
+            if (dobMatch01) {
+                demographics.doa = dobMatch01[1];
+            }
+			
+			// 0.2. Extract Date of Service DOE
+            const dobMatch012= text.match(/2026\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) );
+            if (dobMatch02) {
+                demographics.doe = dobMatch02[1];
+            }
+			// 1. Extract Name and MRN using the "Status" anchor
             const anchor = "Status:";
             const anchor2 = "Page # 1";
 			const statusIndex = text.indexOf(anchor);
@@ -386,10 +399,6 @@ ALLERGIES: NKDA`;
   			// Adding the "Full name: " prefix to match your requirement
     		demographics.name = ` ${extractedName}`;
 			}
-		//    if (anchor2) {
-				//demographics.name =  fullName  ;
-		//	    }
-
      
             // 2. Extract DOB (Handles formats like Birth Date: 1/1/1948)
             const dobMatch = text.match(/Birth\s*Date:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) ||
@@ -991,7 +1000,7 @@ Risk Assessment: Patient on multiple high-risk medications - Polypharmacy (${med
 
 ICD10 Codes: ${dxCodeString}.
 
-NGA
+NGA  ${demographics.doe} |  ${demographics.doa} 
 Billing: ${demographics.dos}|${demographics.name}|${demographics.dob}|| ${dxCodeString}| 99309`;
         }
 
