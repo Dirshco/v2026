@@ -363,10 +363,17 @@ ALLERGIES: NKDA`;
                 dos: ' ',
 				doa: ' ',
                 doe: ' ',				
+                fac: ' ',				
                 gender: ' '
             };
 
             // 0.1. Extract Date of Admission (DOA)  // Date (MDS):
+			const fac0 = text.substring(22,26);
+			if (fac0) {
+               demographics.fac = fac0;
+           }
+
+			// 0.2. Extract Date of Admission (DOA)  // Date (MDS):
             const anchr = "Admission";
             const anchrlast = "Birth";
             const doaMatch0 = text.indexOf(anchr);
@@ -377,7 +384,7 @@ ALLERGIES: NKDA`;
                demographics.doa = "Date of Admisison: "+doaMatch;
            }
 
-           // 0.2. Extract Date of Service (DOE)
+           // 0.3. Extract Date of Service (DOE)
            const doeMatch = text.substring(6, 20).trim();
            if (doeMatch) {
                demographics.doe = doeMatch;
@@ -972,7 +979,7 @@ Skin: Warm, dry, intact.
 Neurological: No focal deficit.`;
 
             // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan -----
-            return `Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | ${demographics.doa}
+            return `Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | ${demographics.doa} |  ${demographics.fac}
 
 CC: ${visitType}
 
@@ -1009,7 +1016,7 @@ NGA
 ========
 Billing: 
 ========
-${demographics.doe}|${demographics.name}|${demographics.dob}|| ${dxCodeString}| 99309`;
+${demographics.doe}|${demographics.name}|${demographics.dob}|${demographics.fac}| ${dxCodeString}| 99309`;
         }
 
         // ----- update output -----
