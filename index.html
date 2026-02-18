@@ -67,7 +67,7 @@
         }
         textarea {
             width: 100%;
-            height: 500px;
+            height: 100px;
             padding: 16px;
             font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-size: 13px;
@@ -228,26 +228,19 @@
         <!-- INPUT PANEL -->
         <div class="panel">
             <h2>📝 1. Paste patient data</h2>
-            <textarea id="inputText" placeholder="Paste vitals, diagnoses, medications, allergies here... (see sample below)">ate:  Feb 18, 2026	*Rehab Center	 
+            <textarea id="inputText" placeholder="Paste vitals, diagnoses, medications, allergies here... (see sample below)">Date:  Feb 18, 2026	*Rehab Center	 
 Time: 13:33:22 ET	Resident Dashboard	 
-User:  Nadir Abdelrahman		Page # 1
+User:  TestDoctor		Page # 1
   Doe, Jane (12345)    Status: 	Current  Admission (Re-entry): 	6/10/2024
   Gender: 	Female
 
-71yo f. Vital Sign	Recent Value	Date	Time
-Weight:	390.2	2/13/2026	20:58
-Blood Pressure:	165 /  73	2/14/2026	09:39
+71yo f. VS Blood Pressure:	165 /  73	2/14/2026	09:39
 
-Medications:
-Baclofen Oral Tablet 10 MG
+Medications: Baclofen Oral Tablet 10 MG
 DULoxetine HCl Oral Capsule Delayed Release Particles 60 MG
 
-Diagnoses:
-I50.42	CHRONIC COMBINED SYSTOLIC AND DIASTOLIC HRT FAIL
+Diagnoses: I50.42	CHRONIC COMBINED SYSTOLIC AND DIASTOLIC HRT FAIL
 E03.9	HYPOTHYROIDISM, UNSPECIFIED
-F32.9 - MAJOR DEPRESSIVE DISORDER
-
-
 
 ALLERGIES: NKDA</textarea>
             <p style="margin: 8px 0 0 12px; opacity:0.7;">↑ sample preloaded — edit or replace</p>
@@ -301,6 +294,7 @@ ALLERGIES: NKDA</textarea>
 </div>
 
 <script>
+let listCurrentMed = "";
     (function() {
         // ----- DOM elements -----
         const inputTextarea = document.getElementById('inputText');
@@ -317,18 +311,13 @@ ALLERGIES: NKDA</textarea>
         const SAMPLE_INPUT = `Date:  Feb 14, 2026	*Care and Rehab Center	 
 Time: 20:17:08 ET	Resident Dashboard	 
 User:  Doctor Name_		Page # 1 Doe, Jane (12345)
-DOB: 01/15/1955
-DOS: 02/14/2026
-Gender: Female
+DOB: 01/15/1955 DOS: 02/14/2026 Gender: Female
 
-71yo f. Vital Sign	Recent Value	Date	Time
-Weight:	390.2	2/13/2026	20:58
+71yo f. VS Weight:	390.2	2/13/2026	20:58
 
-Medications:
-Baclofen Oral Tablet 10 MG
+Medications: Baclofen Oral Tablet 10 MG
 
-Diagnoses:
-I50.42	CHRONIC COMBINED SYSTOLIC AND DIASTOLIC HRT FAIL
+Diagnoses: I50.42	CHRONIC COMBINED SYSTOLIC AND DIASTOLIC HRT FAIL
 E03.9	HYPOTHYROIDISM, UNSPECIFIED
 F32.9 - MAJOR DEPRESSIVE DISORDER
 
@@ -353,10 +342,26 @@ ALLERGIES: NKDA`;
             };
 
             // 0.1. Extract Date of Admission (DOA)  // Date (MDS):
-			const fac0 = text.substring(22,26);
-			if (fac0) {
-               demographics.fac = fac0;
-           }
+            
+		  //	const fac0 = text.substring(22,26);
+		  //	if (fac0) {
+          //     demographics.fac = fac0;
+          //   }
+const holt1 = "Holt";
+const dimondale1 = "Dimondale";
+const bur1 = "Burcham";
+
+const line_1 = text.substring(0, 100);
+
+const facHolt = line_1.indexOf(holt1);
+if (facHolt !== -1) demographics.fac = "Holt";
+
+const facDim = line_1.indexOf(dimondale1);
+if (facDim !== -1) demographics.fac = "Dimondale";
+
+const facBur = line_1.indexOf(bur1);
+if (facBur !== -1) demographics.fac = "Burcham Hill";
+    
 
 			// 0.2. Extract Date of Admission (DOA)  // Date (MDS):
             const anchr = "Admission";
@@ -875,13 +880,15 @@ ALLERGIES: NKDA`;
             const o2Match = text.match(/(?:O2\s*sats?|O2\s*Sat):?\s*(\d{2,3}\.?\d?)\s*%/i);
             if (o2Match) vitals['O2 Sats'] = o2Match[1] + '%';
             
-            // Extract Weight
-            let weightValue = null;
-            const weightMatch = text.match(/Weight:?\s*(\d{3}\.?\d?\s*lbs)/i);
-            if (weightMatch) {
-                vitals['Weight'] = weightMatch[1];
-                weightValue = weightMatch[1];
-            }
+			//////
+            // This regex looks for 'Weight:', then captures the next number
+const match = text.match(/Weight:\s+([\d.]+)/);
+
+const weight = match ? match[1] : "";
+
+// Adding it to another string using a template literal
+
+            //////
             
             // Extract Height
             let heightValue = null;
@@ -895,9 +902,9 @@ ALLERGIES: NKDA`;
             const bmiMatch = text.match(/BMI:?\s*(\d{2}\.?\d?)/i);
             if (bmiMatch) {
                 vitals['BMI'] = bmiMatch[1];
-            } else if (weightValue && heightValue) {
+            } else if (weight && heightValue) {
                 // Calculate BMI from weight and height
-                const calculatedBMI = calculateBMI(weightValue, heightValue);
+                const calculatedBMI = calculateBMI(weight, heightValue);
                 if (calculatedBMI) {
                     vitals['BMI'] = calculatedBMI.toString();
                 }
@@ -995,6 +1002,11 @@ ALLERGIES: NKDA`;
                 monitoringText = '\n\nMedication Monitoring Recommendations:\n- ' + monitoringRecs.slice(0, 5).join('\n- ');
             }
 
+  // ==
+  // 7.1 OBTAIN CURRENT MED LIST
+
+
+// ==
             // ----- 8. PHYSICAL EXAM (template) -----
             const physicalExam = `Physical Exam:
 General: appears comfortable at rest, in no acute distress.
@@ -1007,10 +1019,11 @@ Extremities: No cyanosis.
 Skin: Warm, dry, intact. 
 Neurological: No focal deficit.`;
 
+
             // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan -----
             return `CC: ${visitType}
 Patient: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | Date of Admisison: ${demographics.doa} |  ${demographics.fac}
-.
+. 
 Subjective: ${demographics.name} is an elderly ${demographics.gender} who was admitted here for nursing care. 
 ${visitTypeText}${visitType === 'other' ? '' : ''}Case d/w the staff. No concerns per staff report. 
 
@@ -1018,15 +1031,18 @@ Per Nurse notes: ""
 
 ROS: No active bleeding. Pt tolerates medications. Pt tolerates meal. No n/v/d.
 Assistive Device(s): wheelchair [ ] walker [ ] cane [ ] glasses [ ] reacher [ ] hearing aid [ ] dentures [ ]
+[ ✓ indicates device(s) used]. 
 
 PMH/PSH: ${pmhString}.
 SH: Resident here since ${demographics.doa}.
 
 Allergies: ${allergies}.
 
-Medications: ${medString}.
+Medications: 
+${medString}.
+${listCurrentMed ? listCurrentMed + "." : ""}
 
-VS: ${vitalString}.
+VS: ${vitalString} Weight: ${weight} lbs.
 
 ${physicalExam}
 
