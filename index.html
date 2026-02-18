@@ -366,8 +366,8 @@ ALLERGIES: NKDA`;
             const doaMatch2 = doaMatch1 - 14;
             const doaMatch = text.substring(doaMatch2, doaMatch1).trim();
 			if (doaMatch) {
-            	demographics.doa = "Date of Admisison: "+doaMatch;
-				demographics.doaa = "+doaMatch;
+            	demographics.doa = doaMatch;
+			
            }
 
            // 0.3. Extract Date of Service (DOE)
@@ -1009,17 +1009,18 @@ Neurological: No focal deficit.`;
 
             // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan -----
             return `CC: ${visitType}
-Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | ${demographics.doa} |  ${demographics.fac}
+Patient: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | Date of Admisison: ${demographics.doa} |  ${demographics.fac}
 .
-Subjective:
+Subjective: ${demographics.name} is an elderly ${demographics.gender} who was admitted here for nursing care. 
 ${visitTypeText}${visitType === 'other' ? '' : ''}Case d/w the staff. No concerns per staff report. 
+
 Per Nurse notes: ""
 
 ROS: No active bleeding. Pt tolerates medications. Pt tolerates meal. No n/v/d.
-Assistive Device(s):
+Assistive Device(s): wheelchair [ ] walker [ ] cane [ ] glasses [ ] reacher [ ] hearing aid [ ] dentures [ ]
 
 PMH/PSH: ${pmhString}.
-SH: Resident here since ${demographics.doaa}.
+SH: Resident here since ${demographics.doa}.
 
 Allergies: ${allergies}.
 
