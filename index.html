@@ -228,28 +228,19 @@
         <!-- INPUT PANEL -->
         <div class="panel">
             <h2>📝 1. Paste patient data</h2>
-            <textarea id="inputText" placeholder="Paste vitals, diagnoses, medications, allergies here... (see sample below)">Doe, Jane (12345)
-DOB: 01/15/1955
-DOS: 02/14/2026
-Gender: Female
+            <textarea id="inputText" placeholder="Paste vitals, diagnoses, medications, allergies here... (see sample below)">ate:  Feb 18, 2026	*Rehab Center	 
+Time: 13:33:22 ET	Resident Dashboard	 
+User:  Nadir Abdelrahman		Page # 1
+  Doe, Jane (12345)    Status: 	Current  Admission (Re-entry): 	6/10/2024
+  Gender: 	Female
 
 71yo f. Vital Sign	Recent Value	Date	Time
 Weight:	390.2	2/13/2026	20:58
 Blood Pressure:	165 /  73	2/14/2026	09:39
-Temperature:	98.0	2/14/2026	09:38
-Pulse:	69	2/14/2026	09:39
-Respirations:	17	2/14/2026	09:39
-O2 sats:	95.0 %	2/14/2026	09:39
-Height:	68.0	2/13/2026	16:42
-Pain Level:	0
 
 Medications:
 Baclofen Oral Tablet 10 MG
 DULoxetine HCl Oral Capsule Delayed Release Particles 60 MG
-Cardizem Oral Tablet 120 MG
-Bumetanide Oral Tablet 1 MG
-Amiodarone HCl Oral Tablet 200 MG
-
 
 Diagnoses:
 I50.42	CHRONIC COMBINED SYSTOLIC AND DIASTOLIC HRT FAIL
@@ -332,13 +323,6 @@ Gender: Female
 
 71yo f. Vital Sign	Recent Value	Date	Time
 Weight:	390.2	2/13/2026	20:58
-Blood Pressure:	165 /  73	2/14/2026	09:39
-Temperature:	98.0	2/14/2026	09:38
-Pulse:	69	2/14/2026	09:39
-Respirations:	17	2/14/2026	09:39
-O2 sats:	95.0 %	2/14/2026	09:39
-Height:	68.0	2/13/2026	16:42
-Pain Level:	0
 
 Medications:
 Baclofen Oral Tablet 10 MG
@@ -362,6 +346,7 @@ ALLERGIES: NKDA`;
                 dob: ' ',
                 dos: ' ',
 				doa: ' ',
+				doaa: ' ',
                 doe: ' ',				
                 fac: ' ',				
                 gender: ' '
@@ -381,7 +366,8 @@ ALLERGIES: NKDA`;
             const doaMatch2 = doaMatch1 - 14;
             const doaMatch = text.substring(doaMatch2, doaMatch1).trim();
 			if (doaMatch) {
-               demographics.doa = "Date of Admisison: "+doaMatch;
+            	demographics.doa = "Date of Admisison: "+doaMatch;
+				demographics.doaa = "+doaMatch;
            }
 
            // 0.3. Extract Date of Service (DOE)
@@ -535,14 +521,37 @@ ALLERGIES: NKDA`;
                 { pattern: /mounjaro|tirzepatide|ozempic|semaglutide|trulicity|dulaglutide|glp-1/i, name: 'GLP-1 agonist' },
                 { pattern: /bumetanide|furosemide|lasix|torsemide|diuretic/i, name: 'Diuretics' },
                 { pattern: /entresto|sacubitril|valsartan|losartan|lisinopril|ACE|ARB|antihypertensive/i, name: 'Antihypertensives' },
-                { pattern: /metformin/i, name: 'Metformin' },
+                { pattern: /metformin|glucophage|glumetza|fortamet|riomet/i, name: 'Metformin' },
                 { pattern: /digoxin|lanoxin/i, name: 'Digoxin' },
                 { pattern: /lithium/i, name: 'Lithium' },
                 { pattern: /methotrexate/i, name: 'Methotrexate' },
+                { pattern: /aspirin|asa|clopidogrel|plavix/i, name: 'Antiplatelet' },
                 { pattern: /prednisone|steroid|corticosteroid/i, name: 'Corticosteroids' },
-                { pattern: /opioid|tramadol|morphine|oxycodone|hydrocodone|fentanyl/i, name: 'Opioids' },
-                { pattern: /hydroxychloroquine|plaquenil/i, name: 'Hydroxychloroquine' }
-            ];
+                { pattern: /opioid|tramadol|morphine|oxycodone|hydrocodone|fentanyl|norco/i, name: 'Opioids' },
+                { pattern: /hydroxychloroquine|plaquenil/i, name: 'Hydroxychloroquine' },
+			    { pattern: /chemotherapy|cancer|cisplatin|carboplatin|cyclophosphamide|doxorubicin|fluorouracil|capecitabine|temozolomide|imatinib|gleevec|oncologic/i, name: 'Chemotherapy agents' },
+			    { pattern: /phenytoin|dilantin|valproate|valproic|depakote|carbamazepine|tegretol|lamotrigine|lamictal|levetiracetam|keppra|oxcarbazepine|trileptal|zonisamide|zonegran/i, name: 'Antiepileptics' },
+			    { pattern: /theophylline|aminophylline|elixophyllin|theo-24/i, name: 'Theophylline' },
+			    { pattern: /cyclosporine|neoral|sandimmune|tacrolimus|prograf|sirolimus|rapamune|everolimus|zortress|mycophenolate|cellcept|myfortic/i, name: 'Immunosuppressants' },
+			    { pattern: /potassium|kcl|k-dur|klor-con|micro-k|kaon|slow-k|sodium bicarbonate|phosphate|phosphorus|magnesium|calcium gluconate|calcium chloride|electrolyte/i, name: 'Electrolytes' },
+			    { pattern: /heparin|lovenox|enoxaparin|fondaparinux|arixtra|bivalirudin|angiomax|argatroban/i, name: 'Parenteral anticoagulation' },
+			    { pattern: /nitroprusside|nipride|nitroglycerin|nitrostat|nitromist|nitro-bid|nitrolingual|isosorbide|imdur|isordil/i, name: 'Vasoactive medications' },
+			    { pattern: /propofol|diprivan|versed|midazolam|ativan|lorazepam|valium|diazepam|precedex|dexmedetomidine|versed|halcion|triazolam|xanax|alprazolam|klonopin|clonazepam/i, name: 'Sedatives/anxiolytics' },
+			    { pattern: /succinylcholine|anectine|rocuronium|zemuron|vecuronium|norcuron|cisatracurium|nimbex|pancuronium|pavulon|paralytics|neuromuscular blocker/i, name: 'Neuromuscular blockers' },
+			    { pattern: /epinephrine|adrenaline|norepinephrine|levophed|dopamine|dobutamine|vasopressin|pitressin|phenylephrine|neosynephrine|milrinone|primacor/i, name: 'Vasopressors' },
+			    { pattern: /metoclopramide|reglan|haloperidol|haldol|olanzapine|zyprexa|risperidone|risperdal|quetiapine|seroquel|ziprasidone|geodon|aripiprazole|abilify|paliperidone|invega|clozapine|clozaril|chlorpromazine|thorazine/i, name: 'Antipsychotics (QT prolongation risk)' },
+			    { pattern: /colchicine|colcrys|mitigare|gloperba/i, name: 'Colchicine' },
+			    { pattern: /allopurinol|zyloprim|febuxostat|uloric|probenecid|colbenemid/i, name: 'Gout medications' },
+			    { pattern: /rivastigmine|exelon|donepezil|aricept|galantamine|razadyne|reminyl|memantine|namenda/i, name: 'Cholinesterase inhibitors' },
+			    { pattern: /levothyroxine|synthroid|levoxyl|unithroid|tirosint|methimazole|tapazole|propylthiouracil|ptu|liothyronine|cytomel|desiccated thyroid|armour thyroid/i, name: 'Thyroid medications' },
+			    { pattern: /sildenafil|viagra|tadalafil|cialis|vardenafil|levitra|avanafil|stendra|revatio/i, name: 'PDE5 inhibitors' },
+			    { pattern: /ketorolac|toradol|indomethacin|indocin|ibuprofen|motrin|advil|naproxen|aleve|naprosyn|diclofenac|voltaren|meloxicam|mobic|celecoxib|celebrex|piroxicam|feldene|nsaid|nonsteroidal/i, name: 'NSAIDs (high dose)' },
+			    { pattern: /baclofen|lioresal|gablofen|tizanidine|zanaflex|cyclobenzaprine|flexeril|methocarbamol|robaxin|carisoprodol|soma|dantrolene|dantrium/i, name: 'Muscle relaxants' },
+			    { pattern: /bethanechol|urecholine|neostigmine|prostigmin|pyridostigmine|mestinon|edrophonium|tensilon/i, name: 'Cholinergic agents' },
+			    { pattern: /dronedarone|multaq|flecainide|tambocor|propafenone|rythmol|sotalol|betapace|dofetilide|tikosyn|ibutilide|convert|adenosine|adenocard/i, name: 'Antiarrhythmics' },
+			    { pattern: /ergotamine|ergomar|migergot|caffeine|dihydroergotamine|dhe|migranal|ergonovine|ergotrate|methylergonovine|methergine/i, name: 'Ergot derivatives' }
+						];
+            
             
             // Check medications array (strings)
             for (const med of medications) {
@@ -577,7 +586,27 @@ ALLERGIES: NKDA`;
                 { pattern: /hypoglycemia|low blood sugar/i, name: 'Hypoglycemia risk' },
                 { pattern: /dementia|alzheimer|f00|f01|f02|f03/i, name: 'Dementia' },
                 { pattern: /parkinson|g20/i, name: 'Parkinson\'s' },
-                { pattern: /seizure|epilepsy|g40/i, name: 'Seizure disorder' }
+			    { pattern: /cirrhosis|esophageal varices|k70|k74|portal hypertension|end stage liver disease|esld|hepatic failure|k72/i, name: 'Liver disease/cirrhosis' },	
+				{ pattern: /bipolar|manic depression|f31|manic|hypomanic|mixed episode/i, name: 'Bipolar disorder' },
+			    { pattern: /depression|f32|f33|mdd|major depressive|dysthymia|treatment resistant depression|trd/i, name: 'Depression' },
+			    { pattern: /schizophrenia|f20|schizoaffective|f25|psychotic disorder|paranoid schizophrenia|disorganized|catatonic/i, name: 'Schizophrenia/psychosis' },
+			    { pattern: /substance abuse|opioid use disorder|f11|alcohol use disorder|f10|drug dependence|addiction|withdrawal|detox|substance use|sud|oud|aud/i, name: 'Substance use disorder' },
+			    { pattern: /bleeding|hemorrhage|hemorrhagic|intracranial bleed|ich|subarachnoid|subdural|epidural|hematoma|hemophilia|d66|d67|von willebrand|d68/i, name: 'Bleeding disorder' },
+			    { pattern: /pacemaker|artificial heart|cardiac device|z95|icd|aicd|implantable cardioverter|ventricular assist|vad|lvad|crtt|crtd|biventricular pacemaker|biv/i, name: 'Cardiac device' },
+				{ pattern: /electrolyte imbalance|hyponatremia|e87.1|low sodium|hypernatremia|high sodium|hypokalemia|e87.6|low potassium|hyperkalemia|high potassium|hypocalcemia|low calcium|hypercalcemia|high calcium/i, name: 'Electrolyte disorder' },
+				{ pattern: /malnutrition|malnourished|e46|failure to thrive|r62.7|protein calorie|nutritional deficiency|underweight|low bmi|under 18.5|e43|e44|e45/i, name: 'Malnutrition/low BMI' },
+			    { pattern: /dysphagia|swallowing difficulty|r13|aspiration risk|j69|choking|swallow impairment|oropharyngeal dysphagia|esophageal dysphagia/i, name: 'Dysphagia/aspiration risk' },
+				{ pattern: /glaucoma|h40|h42|open angle|angle closure|narrow angle|ocular hypertension|iops|visual field loss|optic neuropathy/i, name: 'Glaucoma' },
+				{ pattern: /bph|prostatic hyperplasia|n40|enlarged prostate|prostatism|lower urinary tract symptoms|luts|bladder outlet obstruction/i, name: 'BPH/LUTS' },
+				{ pattern: /urinary retention|r33|bladder retention|incomplete emptying|difficulty voiding|acute retention|chronic retention|post void residual|pvr|straining to void|hesitancy|intermittent stream/i, name: 'Urinary retention' },
+				{ pattern: /transplant|organ transplant|z94|kidney transplant|renal transplant|liver transplant|heart transplant|lung transplant|bone marrow transplant|bmt|stem cell transplant|post-transplant|allograft|immunosuppressed/i, name: 'Organ transplant' },
+				{ pattern: /immunocompromised|immunosuppressed|d84.9|neutropenia|d70|low wbc|low white count|chemo-induced|radiation-induced|hiv|b20|aids|b24|cd4|opportunistic infection|immunodeficiency/i, name: 'Immunocompromised' },
+				{ pattern: /osteoporosis|m80|m81|low bone density|osteopenia|fragility fracture|vertebral fracture|hip fracture|pathologic fracture|bone loss|z-score|t-score/i, name: 'Osteoporosis' },
+				{ pattern: /gout|m10|uric acid|hyperuricemia|tophi|tophaceous|podagra|monosodium urate|msu|gouty arthritis|acute gout|chronic gout/i, name: 'Gout' },
+				{ pattern: /pain chronic|chronic pain|g89.4|g89.2|g89.8|g89.9|persistent pain|long-term pain|widespread pain|fibromyalgia|m79.7|central pain|neuropathic pain|radicular pain|myofascial pain|complex regional pain|causalgia|reflex sympathetic dystrophy|rsd|cprs|chronic pain syndrome|cps/i, name: 'Chronic pain' },
+ 				{ pattern: /sleep apnea|g47.3|osa|obstructive sleep apnea|csa|central sleep apnea|mixed apnea|hypopnea|ahi|oxygen desaturation|cpap|bipap|apneic|hypoxic episodes|nocturnal hypoxia|sleep disordered breathing|pickwickian|obesity hypoventilation|ohs/i, name: 'Sleep apnea' },
+				{ pattern: /orthostatic hypotension|postural hypotension|i95.1|i95.8|i95.9|syncope|r55|dizziness upon standing|drop in bp|neurogenic orthostasis/i, name: 'Orthostatic hypotension' },
+				{ pattern: /seizure|epilepsy|g40/i, name: 'Seizure disorder' }
             ];
             
             for (const condition of highRiskConditions) {
@@ -709,8 +738,8 @@ ALLERGIES: NKDA`;
                 }
             }
             
-            // Remove duplicates and limit to 10
-            return [...new Set(abbreviations)].slice(0, 10);
+            // Remove duplicates and limit to 20
+            return [...new Set(abbreviations)].slice(0, 20);
         }
 
         // ----- Function to get visit type text -----
@@ -743,7 +772,7 @@ ALLERGIES: NKDA`;
                     return "Seen today in a followup visit. Pt tolerates meds and meals. No concerns at this time. ";
 
                 default:
-                    return "Seen today in a followup visit. Pt tolerates meds and meals. No concerns at this time. ";
+                    return "Seen today. Pt tolerates meds and meals. Case discussed with the staff. No concerns at this time. ";
             }
         }
 
@@ -883,7 +912,7 @@ ALLERGIES: NKDA`;
             for (let k of order) {
                 if (vitals[k]) vitalParts.push(`${k}: ${vitals[k]}`);
             }
-            const vitalString = vitalParts.length > 0 ? vitalParts.join('; ') : 'Vitals incomplete';
+            const vitalString = vitalParts.length > 0 ? vitalParts.join('; ') : 'Vitals per PCC';
 
             // ----- 4. DIAGNOSES (ICD10 + description) AND PMH -----
             const dxSet = new Set();
@@ -969,7 +998,7 @@ ALLERGIES: NKDA`;
             // ----- 8. PHYSICAL EXAM (template) -----
             const physicalExam = `Physical Exam:
 General: appears comfortable at rest, in no acute distress.
-HEENT: Normocephalic, atraumatic. Mucous membranes moist. No epistaxis.
+HEENT: Normocephalic, atraumatic. No epistaxis.
 Neck: Supple. No JVD noted.
 Lungs: Normal respiratory rate. No Audible wheezes, normal effort.
 Heart: Normal heart rate.
@@ -979,17 +1008,21 @@ Skin: Warm, dry, intact.
 Neurological: No focal deficit.`;
 
             // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan -----
-            return `Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | ${demographics.doa} |  ${demographics.fac}
-
-CC: ${visitType}
-
+            return `CC: ${visitType}
+Patient Name: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | ${demographics.doa} |  ${demographics.fac}
+.
 Subjective:
-${visitTypeText}${visitType === 'other' ? '' : ''} Case d/w the staff. No concerns per staff report. 
+${visitTypeText}${visitType === 'other' ? '' : ''}Case d/w the staff. No concerns per staff report. 
+Per Nurse notes: ""
+
 ROS: No active bleeding. Pt tolerates medications. Pt tolerates meal. No n/v/d.
-Assistive Device(s):          |  ADLs:                    |    IADLs: 
+Assistive Device(s):
 
 PMH/PSH: ${pmhString}.
+SH: Resident here since ${demographics.doa}.
+
 Allergies: ${allergies}.
+
 Medications: ${medString}.
 
 VS: ${vitalString}.
@@ -1000,11 +1033,12 @@ Assessment:
 ${dxNumberedList}
 
 Plan:
-- Will continue supportive care, current medications with close monitoring for hypotension, hypoglycemia, bleeding, and falls.
-- Continue current diet and skincare monitoring.
+- continue supportive care, current medications.
+- Continue current diet and skincare.
+- Continue pain control.
 - Fall precautions.
 - Recommended labs per monitoring guidelines.
-- Follow up per protocol or as need arise.
+- Follow up per protocol or as needed.
 
 CPT code: 99309
 
@@ -1013,10 +1047,9 @@ Risk Assessment: Patient on multiple high-risk medications - Polypharmacy (${med
 ICD10 Codes: ${dxCodeString}.
 
 NGA    
-========
-Billing: 
-========
-${demographics.doe}|${demographics.name}|${demographics.dob}|${demographics.fac}| ${dxCodeString}| 99309`;
+-----------------------------------------------------------
+Billing: ${demographics.doe}|${demographics.name}|${demographics.dob}|${demographics.fac}|${dxCodeString}|99309| ${visitType}
+`;
         }
 
         // ----- update output -----
