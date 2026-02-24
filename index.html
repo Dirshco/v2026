@@ -338,8 +338,8 @@ ALLERGIES: NKDA`;
                 name: '',
                 dob: ' ',
                 dos: ' ',
-				doa: ' ',
-				doaa: ' ',
+		doa: ' ',
+		doaa: ' ',
                 doe: ' ',				
                 fac: ' ',				
                 gender: ' '
@@ -380,10 +380,17 @@ if (facBur !== -1) demographics.fac = "Burcham Hill";
            }
 
            // 0.3. Extract Date of Service (DOE)
-           const doeMatch = text.substring(6, 20).trim();
-           if (doeMatch) {
-               demographics.doe = doeMatch;
-           }
+const doeMatch = text.substring(6, 20).trim();
+if (doeMatch) {
+    // demographics.doe = doeMatch; // date of encounter or service
+    const dateofservice = new Date(doeMatch);
+    
+    //== format the date 
+    if (dateofservice instanceof Date && !isNaN(dateofservice)) {
+        demographics.doe = `${String(dateofservice.getMonth() + 1).padStart(2, '0')}/${String(dateofservice.getDate()).padStart(2, '0')}/${dateofservice.getFullYear()}`;
+    }
+    //== end of format date
+}
 			// 1. Extract Name and MRN using the "Status" anchor
             const anchor = "Status:";
             const anchor2 = "Page # 1";
@@ -751,6 +758,42 @@ if (facBur !== -1) demographics.fac = "Burcham Hill";
             return [...new Set(abbreviations)].slice(0, 20);
         }
 
+// Function to get CPT code ---
+		function getVisitCPT(visitType){
+        const visitCPT = visitType;
+        switch(visitCPT) {
+                case 'abn_lab':
+                    return "99309";
+                case 'fall':
+                    return "99309";
+                case 'urgent':
+                    return "99309";
+                case 'HISTORY AND PHYSICAL':
+                    return "99306, 99497";
+                case 'DISCHARGE SUMMARY':
+                    return "99316";
+                case 'annual':
+                    return "99309";
+                case 'regulatory':
+                    return "99309";
+                case 'capacity':
+                    return "99309";
+
+                case 'telemed':
+                    return "99309GT";
+
+                case 'family':
+                    return "99309";
+   
+                case 'followup':
+                    return "99308";
+
+                default:
+                    return "99309";
+            }
+        }
+
+// ---- end of CPT code ---
         // ----- Function to get visit type text -----
         function getVisitTypeText(visitType) {
             switch(visitType) {
@@ -796,6 +839,11 @@ if (facBur !== -1) demographics.fac = "Burcham Hill";
             // Get visit type text
             const visitType = visitTypeSelect.value;
             const visitTypeText = getVisitTypeText(visitType);
+
+          // get visit CPT 
+            const visitCPTtext = visitTypeSelect.value;
+            const visitCPT = getVisitCPT(visitCPTtext);
+
 
             // ----- 1. ALLERGIES -----
             let allergies = 'NKDA'; // default
@@ -1061,15 +1109,15 @@ Plan:
 - Recommended labs per monitoring guidelines.
 - Follow up per protocol or as needed.
 
-CPT code: 99309
+
 
 Risk Assessment: Patient on multiple high-risk medications - Polypharmacy (${medFullList.length}+ medications) increases risk of drug interactions and adverse effects.${riskFactors.length > 0 ? ' Additional risks: ' + riskFactors.slice(0, 8).join(', ') + '.' : ''}${monitoringText}
 
 ICD10 Codes: ${dxCodeString}.
-
+CPT code: ${visitCPT}
 NGA    
------------------------------------------------------------
-Billing: ${demographics.doe}|${demographics.name}|${demographics.dob}|${demographics.fac}|${dxCodeString}|99309| ${visitType}
+Billing: ------------------------------------------------------------------
+${demographics.doe}|${demographics.name}|${demographics.dob}|${demographics.fac}|${dxCodeString}|${visitCPT}| ${visitType}
 `;
 			extract_Medications(); // update med list
         }
