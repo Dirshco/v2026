@@ -1077,15 +1077,17 @@ Neurological: No focal deficit.`;
 Patient: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | Date of Admisison: ${demographics.doa} |  ${demographics.fac}
 . 
 Subjective: ${demographics.name} is an elderly ${demographics.gender} who was admitted here for nursing care. 
-${visitTypeText}${visitType === 'other' ? '' : ''}Case d/w the staff. No concerns per staff report. 
+${visitTypeText}${visitType === 'other' ? '' : ''}Case d/w the staff. No active bleeding. Pt tolerates medications and meals. RD following. 
 
 Per Nurse notes: ""
 
-ROS: No active bleeding. Pt tolerates medications. Pt tolerates meal. No n/v/d.
+ROS: No n/v/d. No sob. No chest pain.
 Assistive Device(s): wheelchair [ ] walker [ ] cane [ ] glasses [ ] reacher [ ] hearing aid [ ] dentures [ ]
 [ ✓ indicates device(s) used]. 
 
-PMH/PSH: ${pmhString}.
+PMH: ${pmhString}.
+PSH: Noted. No changes.
+FH: Noted. No changes.
 SH: Resident here since ${demographics.doa}.
 
 Allergies: ${allergies}.
@@ -1102,14 +1104,13 @@ Assessment:
 ${dxNumberedList}
 
 Plan:
-- continue supportive care, current medications.
+- Continue supportive care
+- Current current medications.
 - Continue current diet and skincare.
 - Continue pain control.
 - Fall precautions.
 - Recommended labs per monitoring guidelines.
 - Follow up per protocol or as needed.
-
-
 
 Risk Assessment: Patient on multiple high-risk medications - Polypharmacy (${medFullList.length}+ medications) increases risk of drug interactions and adverse effects.${riskFactors.length > 0 ? ' Additional risks: ' + riskFactors.slice(0, 8).join(', ') + '.' : ''}${monitoringText}
 
