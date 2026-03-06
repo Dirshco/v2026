@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Note Generator - CPT 99309 with Full Template</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            padding: 30px;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #0b3b4b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h1 small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #2c6e7c;
+            margin-left: auto;
+        }
+        .main-panel {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .panel {
+            flex: 1 1 400px;
+            background: #f9fafc;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 1px 3px #00000010, 0 4px 10px #0000000c;
+        }
+        .panel h2 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 16px;
+            color: #1d4e5f;
+            border-bottom: 2px solid #cbdbe0;
+            padding-bottom: 8px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            background: #ffffff;
+            border: 1px solid #bccbd2;
+            border-radius: 16px;
+            resize: vertical;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: 0.15s;
+        }
+        textarea:focus {
+            border-color: #2b95b3;
+            outline: none;
+            box-shadow: 0 0 0 3px #a3d0db70;
+        }
+        textarea[readonly] {
+            background: #f2f6f9;
+        }
+        .button-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 14px;
+            margin: 24px 0 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: white;
+            border: 1px solid #2b95b3;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1d5d71;
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 3px #00000008;
+        }
+        button:hover {
+            background: #e2f0f5;
+            border-color: #147691;
+            color: #063544;
+            transform: scale(1.02);
+        }
+        button.primary {
+            background: #1d5d71;
+            border-color: #124653;
+            color: white;
+            box-shadow: 0 6px 10px #1d5d7130;
+        }
+        button.primary:hover {
+            background: #134c60;
+        }
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .copy-confirm {
+            color: #1e7b4b;
+            font-weight: 500;
+            background: #dff0e6;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .copy-confirm.show {
+            opacity: 1;
+        }
+        .guidance-box {
+            background: #e8f0f5;
+            border-left: 5px solid #1d5d71;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0 5px;
+            font-size: 0.9rem;
+        }
+        .guidance-box h3 {
+            margin: 0 0 8px 0;
+            color: #0b3b4b;
+            font-size: 1.1rem;
+        }
+        .guidance-box ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+            color: #1d4e5f;
+        }
+        .guidance-box li {
+            margin: 3px 0;
+        }
+        footer {
+            margin-top: 25px;
+            text-align: right;
+            color: #3f6f7e;
+            font-size: 0.9rem;
+        }
+        hr {
+            border: 1px solid #cde0e5;
+            margin: 20px 0 5px;
+        }
+        .risk-badge {
+            background: #d15a5a;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+        .visit-type-selector {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f0f7fa;
+            border-radius: 12px;
+        }
+        select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #bccbd2;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        📋 Nursing Home Note Generator <span class="risk-badge">CPT 99309</span>
+        <small>CMS · AGS · MDS ready</small>
+    </h1>
+    
+    <div class="visit-type-selector">
+        <strong>Visit Type:</strong>
+        <select id="visitTypeSelect">
+            <option value="followup">F/u visit</option>
+            <option value="annual">Annual f/u visit</option>
+            <option value="abn_lab">Abnormal Lab</option>
+            <option value="HISTORY AND PHYSICAL">History and Physical</option>
+            <option value="DISCHARGE SUMMARY">Discharge Summary</option>
+            <option value="fall">Fall</option>
+            <option value="urgent">Urgent Visit</option>
+            <option value="regulatory">Regulatory Visit</option>
+            <option value="capacity">Capacity Evaluation</option>
+            <option value="telemed">Telemedicine Visit</option>
+            <option value="family">Family Meeting</option>
+            <option value="other">Other (default)</option>
+        </select>
+        <span style="margin-left: 20px; color: #1d5d71;">Select visit type to customize chief complaint</span>
+    </div>
+
+    <div class="main-panel">
+        <!-- INPUT PANEL -->
+        <div class="panel">
+            <h2>📝 1. Paste patient data</h2>
+            <textarea id="inputText" placeholder="Paste vitals, diagnoses, medications, allergies here...">Date:  Feb 18, 2026	*Rehab Center	 
+Time: 13:33:22 ET	Resident Dashboard	 
+User:  TestDoctor		Page # 1
+  Doe, Jane (12345)    Status: 	Current  Admission (Re-entry): 	6/10/2024
+  Gender: 	Female
+
+71yo f. VS Blood Pressure:	165 /  73	2/14/2026	09:39
+
+Medications
+Last Ordered	Due	Description	Reorder	Revised
+ 	 	Baclofen Oral Tablet 10 MG	 	3/5/2026
+ 	 	DULoxetine HCl Oral Capsule Delayed Release Particles 60 MG	 	3/5/2026
+
+Diagnoses: I50.42	CHRONIC COMBINED SYSTOLIC AND DIASTOLIC HRT FAIL
+E03.9	HYPOTHYROIDISM, UNSPECIFIED
+
+ALLERGIES: NKDA</textarea>
+            <p style="margin: 8px 0 0 12px; opacity:0.7;">↑ sample preloaded — edit or replace</p>
+        </div>
+
+        <!-- OUTPUT PANEL -->
+        <div class="panel">
+            <div class="output-header">
+                <h2>📄 2. Generated template <span class="risk-badge">CPT 99309</span></h2>
+                <span id="copyConfirm" class="copy-confirm">✅ Copied!</span>
+            </div>
+            <textarea id="outputText" readonly placeholder="Click 'Generate note' to create template..." style="height: 400px;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                <span style="color:#1e5f72;">High complexity · CPT 99309</span>
+                <button id="copyButton" style="padding: 8px 20px;">📋 Copy to clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="button-bar">
+        <button id="generateBtn" class="primary">⚡ Generate note from input</button>
+        <button id="resetToSampleBtn">↺ Reload sample</button>
+        <button id="clearBtn">🗑️ Clear output</button>
+    </div>
+    
+    <hr>
+    
+    <!-- Risk Factor Summary (dynamic) -->
+    <div id="riskSummary" style="margin: 15px 0; padding: 12px; background: #f9f2e5; border-radius: 12px; border-left: 5px solid #d15a5a;">
+        <strong>⚠️ Risk Factors Detected:</strong> <span id="riskFactorsDisplay">None identified</span>
+        <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #5a3a3a;">These factors support CPT 99309 (high complexity) medical necessity documentation.</p>
+    </div>
+    
+    <!-- Clinical Guidance Box -->
+    <div class="guidance-box">
+        <h3>📋 CPT 99309 Documentation Support - High Risk Factors Identified</h3>
+        <ul>
+            <li><strong>Anticoagulation:</strong> Increased risk of bleeding, falls risk, requires monitoring for bruising/hemorrhage</li>
+            <li><strong>Antiarrhythmic (Amiodarone):</strong> Requires monitoring for thyroid dysfunction, pulmonary toxicity, hepatotoxicity, bradycardia</li>
+            <li><strong>Diabetes Medications:</strong> Risk of hypoglycemia, especially with reduced oral intake</li>
+            <li><strong>Diuretics:</strong> Risk of hypotension, electrolyte imbalance, dehydration, acute kidney injury</li>
+            <li><strong>Antihypertensives:</strong> Risk of hypotension, hyperkalemia, angioedema, renal impairment</li>
+            <li><strong>Cardiac Conditions:</strong> Risk of exacerbation, fluid overload, arrhythmias, falls from hypotension</li>
+            <li><strong>Polypharmacy:</strong> Increased risk of drug interactions, adverse effects, medication errors</li>
+            <li><strong>History of Falls:</strong> Significantly increased risk with anticoagulation and hypotensive agents</li>
+        </ul>
+        <p style="margin: 8px 0 0 0; font-style: italic;">✓ These factors support medical necessity for CPT 99309 (high complexity, 45-59 minutes) vs 99308 (moderate complexity)</p>
+    </div>
+    <hr>
+    <footer>🔍 CPT 99309 documentation support: High-risk medications and conditions automatically identified. Includes medication-specific monitoring recommendations.</footer>
+</div>
+
+<script>
+(function() {
+    // ----- DOM elements -----
+    const inputTextarea = document.getElementById('inputText');
+    const outputTextarea = document.getElementById('outputText');
+    const generateBtn = document.getElementById('generateBtn');
+    const resetSampleBtn = document.getElementById('resetToSampleBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyBtn = document.getElementById('copyButton');
+    const copyConfirmSpan = document.getElementById('copyConfirm');
+    const riskFactorsDisplay = document.getElementById('riskFactorsDisplay');
+    const visitTypeSelect = document.getElementById('visitTypeSelect');
+
+    // ----- Enhanced sample with medication table -----
+    const SAMPLE_INPUT = `Date:  Feb 18, 2026	*Rehab Center	 
+Time: 13:33:22 ET	Resident Dashboard	 
+User:  TestDoctor		Page # 1
+  Doe, Jane (12345)    Status: 	Current  Admission (Re-entry): 	6/10/2024
+  Gender: 	Female
+
+71yo f. VS Blood Pressure:	165 /  73	2/14/2026	09:39
+
+Medications
+Last Ordered	Due	Description	Reorder	Revised
+ 	 	Baclofen Oral Tablet 10 MG	 	3/5/2026
+ 	 	DULoxetine HCl Oral Capsule Delayed Release Particles 60 MG	 	3/5/2026
+ 	 	Amiodarone Oral Tablet 200 MG	 	3/5/2026
+ 	 	Apixaban Oral Tablet 5 MG	 	3/5/2026
+ 	 	Furosemide Oral Tablet 40 MG	 	3/5/2026
+
+Diagnoses: I50.42	CHRONIC COMBINED SYSTOLIC AND DIASTOLIC HRT FAIL
+E03.9	HYPOTHYROIDISM, UNSPECIFIED
+I48.91 - Atrial Fibrillation
+E11.9 - Type 2 Diabetes
+
+ALLERGIES: NKDA`;
+
+    // ----- Helper: reset sample -----
+    function resetToSample() {
+        inputTextarea.value = SAMPLE_INPUT;
+    }
+
+    // ----- Extract medications from text (FIXED VERSION) -----
+    function extractMedications(text) {
+        const medications = [];
+        
+        // Normalize line breaks and replace &nbsp;
+        const cleanText = text.replace(/\u00a0/g, " ").replace(/\r\n/g, '\n');
+        const lines = cleanText.split('\n');
+        
+        let inMedSection = false;
+        let foundHeader = false;
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            // Check for Medications header
+            if (line.match(/^medications$/i) || line === 'Medications') {
+                inMedSection = true;
+                foundHeader = false;
+                continue;
+            }
+            
+            // Look for the table header row
+            if (inMedSection && !foundHeader && line.includes('Description') && line.includes('Revised')) {
+                foundHeader = true;
+                continue;
+            }
+            
+            // If we're in medications section and found the header
+            if (inMedSection && foundHeader) {
+                // Stop conditions - when we hit these sections, exit
+                if (line.match(/^allergies:/i) || 
+                    line.match(/^diagnoses:/i) || 
+                    line.match(/^vitals:/i) ||
+                    line.match(/^date:/i) ||
+                    line.match(/^time:/i) ||
+                    line.match(/^user:/i) ||
+                    line.includes('Birth Date') ||
+                    line.includes('Gender:') ||
+                    line.includes('Enterprise ID') ||
+                    line.includes('Onset Date') ||
+                    line === '') {
+                    
+                    // If we hit an empty line after collecting medications, check if next line is a new section
+                    if (line === '') {
+                        // Look ahead to see if next line starts a new section
+                        if (i + 1 < lines.length) {
+                            const nextLine = lines[i + 1].trim();
+                            if (nextLine.match(/^[A-Z][a-z]+:/) || nextLine.includes('Date:')) {
+                                inMedSection = false;
+                                break;
+                            }
+                        }
+                        continue;
+                    } else {
+                        inMedSection = false;
+                        break;
+                    }
+                }
+                
+                // Skip if line is empty or too short
+                if (line.length < 3) continue;
+                
+                // Skip if line contains table headers
+                if (line.includes('Last Ordered') || 
+                    line.includes('Description') || 
+                    line.includes('Reorder') || 
+                    line.includes('Revised')) {
+                    continue;
+                }
+                
+                // Split by multiple spaces or tabs
+                const parts = line.split(/\s{2,}|\t+/);
+                const nonEmptyParts = parts.filter(p => p.trim() !== '');
+                
+                // For medication rows, we should have at least 2 parts
+                if (nonEmptyParts.length >= 2) {
+                    // Check if first part looks like a date
+                    const firstPart = nonEmptyParts[0].trim();
+                    const isFirstPartDate = /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(firstPart);
+                    
+                    // If first part is a date, medication is the second part
+                    // Otherwise, medication is the first part
+                    let medication = isFirstPartDate ? nonEmptyParts[1] : nonEmptyParts[0];
+                    medication = medication.trim();
+                    
+                    // Validate it's a real medication
+                    if (medication && 
+                        medication.length > 3 && 
+                        /[a-zA-Z]/.test(medication) &&
+                        !/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(medication) &&
+                        !medication.match(/^(Date|Time|User|Birth|Gender|Enterprise|Onset|Page|Status|Unit|Room|Bed)/i)) {
+                        
+                        // Clean up medication name
+                        medication = medication.replace(/\s+/g, ' ').trim();
+                        medications.push(medication);
+                    }
+                }
+            }
+        }
+        
+        // Remove duplicates and sort alphabetically
+        return [...new Set(medications)].sort();
+    }
+
+    // ----- Extract patient demographics -----
+    function extractDemographics(text) {
+        const demographics = {
+            name: '',
+            dob: ' ',
+            dos: ' ',
+            doa: ' ',
+            doe: ' ',				
+            fac: ' ',				
+            gender: ' '
+        };
+
+        // Extract facility name
+        const line_1 = text.substring(0, 100);
+        if (line_1.includes('Holt')) demographics.fac = "Holt";
+        else if (line_1.includes('Dimondale')) demographics.fac = "Dimondale";
+        else if (line_1.includes('Burcham')) demographics.fac = "Burcham Hill";
+
+        // Extract Date of Admission
+        const birthIndex = text.indexOf('Birth');
+        if (birthIndex !== -1) {
+            const doaMatch = text.substring(birthIndex - 14, birthIndex).trim();
+            if (doaMatch) demographics.doa = doaMatch;
+        }
+
+        // Extract Date of Service
+        const doeMatch = text.substring(6, 20).trim();
+        if (doeMatch) {
+            const dateofservice = new Date(doeMatch);
+            if (dateofservice instanceof Date && !isNaN(dateofservice)) {
+                demographics.doe = `${String(dateofservice.getMonth() + 1).padStart(2, '0')}/${String(dateofservice.getDate()).padStart(2, '0')}/${dateofservice.getFullYear()}`;
+            }
+        }
+        
+        // Extract Name
+        const statusIndex = text.indexOf('Status:');
+        const pageIndex = text.indexOf('Page # 1');
+        if (statusIndex !== -1 && pageIndex !== -1) {
+            const startPos = pageIndex + 'Page # 1'.length;
+            const extractedName = text.substring(startPos, statusIndex).trim();
+            demographics.name = extractedName;
+        }
+     
+        // Extract DOB
+        const dobMatch = text.match(/Birth\s*Date:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i) ||
+                        text.match(/Date\s*of\s*Birth:\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
+        if (dobMatch) demographics.dob = dobMatch[1];
+        
+        // Set DOS to today
+        const today = new Date();
+        demographics.dos = `${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}/${today.getFullYear()}`;
+        
+        // Extract Gender
+        const genderMatch = text.match(/Gender:\s*(\w+)/i);
+        if (genderMatch) {
+            demographics.gender = genderMatch[1].toLowerCase().startsWith('f') ? 'Female' : 'Male';
+        }
+        
+        return demographics;
+    }
+
+    // ----- Get medication monitoring recommendations -----
+    function getMedicationMonitoring(medications) {
+        const recommendations = [];
+        const medText = medications.join(' ').toLowerCase();
+        
+        const monitoringMap = [
+            { pattern: /amiodarone|cordarone/i, recommendation: "Amiodarone: Monitor TSH, LFTs, and CXR annually for thyroid dysfunction, pulmonary toxicity, and hepatotoxicity." },
+            { pattern: /dabigatran|pradaxa|warfarin|coumadin|apixaban|eliquis|rivaroxaban|xarelto|anticoagulation/i, recommendation: "Anticoagulation: Monitor for signs of bleeding, INR if on warfarin, renal function annually." },
+            { pattern: /insulin|lantus|humalog|novolog|glargine|lispro|glimepiride|glipizide|glyburide|sulfonylurea|mounjaro|tirzepatide|ozempic|semaglutide|trulicity|dulaglutide|glp-1|metformin/i, recommendation: "Diabetes medications: Monitor A1c every 3-6 months, blood glucose logs, watch for hypoglycemia." },
+            { pattern: /bumetanide|furosemide|lasix|torsemide|diuretic/i, recommendation: "Diuretics: Monitor BMP, weight, signs of dehydration and electrolyte imbalance." },
+            { pattern: /entresto|sacubitril|valsartan|losartan|lisinopril|ace|arb|antihypertensive/i, recommendation: "Antihypertensives: Monitor BMP, potassium, blood pressure for hypotension/hyperkalemia." },
+            { pattern: /levothyroxine|synthroid/i, recommendation: "Levothyroxine: Monitor TSH every 6-12 months." },
+            { pattern: /duloxetine|cymbalta|ssri|snri|antidepressant/i, recommendation: "Antidepressants: Monitor mood, suicidal ideation, side effects." },
+            { pattern: /opioid|tramadol|narcotic/i, recommendation: "Opioid medication: Monitor pain scores, sedation level, bowel function." }
+        ];
+        
+        for (const item of monitoringMap) {
+            if (item.pattern.test(medText)) {
+                recommendations.push(item.recommendation);
+            }
+        }
+        
+        return [...new Set(recommendations)];
+    }
+
+    // ----- Identify risk factors -----
+    function identifyRiskFactors(medications, text) {
+        const riskFactors = [];
+        const textLower = text.toLowerCase();
+        
+        const highRiskMeds = [
+            { pattern: /dabigatran|pradaxa|warfarin|coumadin|apixaban|eliquis|rivaroxaban|xarelto|anticoagulation/i, name: 'Anticoagulation' },
+            { pattern: /amiodarone|cordarone|antiarrhythmic/i, name: 'Amiodarone' },
+            { pattern: /insulin|lantus|humalog|novolog|glargine|lispro/i, name: 'Insulin' },
+            { pattern: /glimepiride|glipizide|glyburide|sulfonylurea/i, name: 'Diabetes meds (hypoglycemia risk)' },
+            { pattern: /bumetanide|furosemide|lasix|torsemide|diuretic/i, name: 'Diuretics' },
+            { pattern: /entresto|sacubitril|valsartan|losartan|lisinopril|ACE|ARB|antihypertensive/i, name: 'Antihypertensives' },
+            { pattern: /opioid|tramadol|morphine|oxycodone|hydrocodone/i, name: 'Opioids' }
+        ];
+        
+        for (const med of medications) {
+            const medLower = med.toLowerCase();
+            for (const risk of highRiskMeds) {
+                if (risk.pattern.test(medLower) && !riskFactors.includes(risk.name)) {
+                    riskFactors.push(risk.name);
+                }
+            }
+        }
+        
+        const highRiskConditions = [
+            { pattern: /heart failure|hf|chf|i50|i11/i, name: 'Heart failure' },
+            { pattern: /atrial fibrillation|afib|af|i48/i, name: 'Atrial fibrillation' },
+            { pattern: /hypertension|htn|high blood pressure|i10|i11/i, name: 'Hypertension' },
+            { pattern: /diabetes|dm|e11|e10|type 2|type 1/i, name: 'Diabetes mellitus' },
+            { pattern: /ckd|chronic kidney|renal failure|n18|n19/i, name: 'CKD' },
+            { pattern: /copd|chronic obstructive|j44/i, name: 'COPD' },
+            { pattern: /obesity|bmi|e66|morbid obesity/i, name: 'Morbid obesity' },
+            { pattern: /fall|z91.81|history of falling/i, name: 'Fall history' },
+            { pattern: /dementia|alzheimer|f00|f01|f02|f03/i, name: 'Dementia' }
+        ];
+        
+        for (const condition of highRiskConditions) {
+            if (condition.pattern.test(textLower) && !riskFactors.includes(condition.name)) {
+                riskFactors.push(condition.name);
+            }
+        }
+        
+        if (medications.length >= 10) {
+            riskFactors.push(`Polypharmacy (${medications.length}+ meds)`);
+        } else if (medications.length >= 5) {
+            riskFactors.push(`Polypharmacy (${medications.length} meds)`);
+        }
+        
+        return [...new Set(riskFactors)];
+    }
+
+    // ----- Get visit type text -----
+    function getVisitTypeText(visitType) {
+        switch(visitType) {
+            case 'abn_lab': return "Pt was seen for abnormal lab. Result noted. ";
+            case 'fall': return "Pt was seen for a fall. Details noted. ";
+            case 'urgent': return "Pt was seen in an urgent visit per staff request. ";
+            case 'HISTORY AND PHYSICAL': return "Pt was seen for initial evaluation. ";
+            case 'DISCHARGE SUMMARY': return "Pt was seen for discharge preparation. ";
+            case 'annual': return "Pt was seen for an annual followup visit. ";
+            case 'regulatory': return "Pt was seen in a regulatory visit. ";
+            case 'capacity': return "Pt was seen per staff request for capacity evaluation. ";
+            case 'telemed': return "Pt was seen in a telemedicine visit. ";
+            case 'family': return "Pt was seen per staff request. Family has questions. ";
+            case 'followup': return "Seen today in a followup visit. ";
+            default: return "Seen today. ";
+        }
+    }
+
+    // ----- Get CPT code -----
+    function getVisitCPT(visitType) {
+        switch(visitType) {
+            case 'abn_lab': return "99309";
+            case 'fall': return "99309";
+            case 'urgent': return "99309";
+            case 'HISTORY AND PHYSICAL': return "99306, 99497";
+            case 'DISCHARGE SUMMARY': return "99316";
+            case 'annual': return "99309";
+            case 'regulatory': return "99309";
+            case 'capacity': return "99309";
+            case 'telemed': return "99309GT";
+            case 'family': return "99309";
+            case 'followup': return "99308";
+            default: return "99309";
+        }
+    }
+
+    // ----- Extract diagnoses -----
+    function extractDiagnoses(text) {
+        const dxSet = new Set();
+        const dxCodeOnlySet = new Set();
+        
+        const dxRegex = /([A-Z]\d{2}\.\d+)\s+([A-Z][A-Z\s\(\)\-]+)/g;
+        let dxMatch;
+        while ((dxMatch = dxRegex.exec(text)) !== null) {
+            let code = dxMatch[1].trim();
+            let desc = dxMatch[2].trim().replace(/\s+/g, ' ');
+            dxSet.add(`${code} - ${desc}`);
+            dxCodeOnlySet.add(code);
+        }
+        
+        const dxNumRegex = /(\d{3}\.\d+)\s+([A-Z][A-Z\s\(\)\-]+)/g;
+        while ((dxMatch = dxNumRegex.exec(text)) !== null) {
+            let code = dxMatch[1].trim();
+            let desc = dxMatch[2].trim().replace(/\s+/g, ' ');
+            dxSet.add(`${code} - ${desc}`);
+            dxCodeOnlySet.add(code);
+        }
+        
+        return {
+            formatted: Array.from(dxSet).slice(0, 15),
+            codes: Array.from(dxCodeOnlySet).slice(0, 5)
+        };
+    }
+
+    // ----- Extract vitals -----
+    function extractVitals(text) {
+        const vitals = {};
+        
+        const bpMatch = text.match(/(?:Blood\s*Pressure|BP):?\s*(\d{2,3})\s*\/\s*(\d{2,3})/i);
+        if (bpMatch) vitals['BP'] = `${bpMatch[1]}/${bpMatch[2]}`;
+        
+        const pulseMatch = text.match(/(?:Pulse|HR):?\s*(\d{2,3})/i);
+        if (pulseMatch) vitals['Pulse'] = pulseMatch[1];
+        
+        const tempMatch = text.match(/(?:Temp(?:erature)?):?\s*(\d{2,3}\.\d)/i);
+        if (tempMatch) vitals['Temp'] = tempMatch[1] + '°F';
+        
+        const respMatch = text.match(/(?:Resp(?:irations)?|RR):?\s*(\d{2,3})/i);
+        if (respMatch) vitals['Resp'] = respMatch[1];
+        
+        const o2Match = text.match(/(?:O2\s*sats?|O2\s*Sat):?\s*(\d{2,3}\.?\d?)\s*%/i);
+        if (o2Match) vitals['O2 Sats'] = o2Match[1] + '%';
+        
+        const weightMatch = text.match(/Weight:?\s*(\d+\.?\d*)\s*(?:lbs|pounds)?/i);
+        if (weightMatch) vitals['Weight'] = weightMatch[1] + ' lbs';
+        
+        const heightMatch = text.match(/Height:?\s*(\d{2,3}\.?\d*)\s*(?:in|inch|inches)?/i);
+        if (heightMatch) vitals['Height'] = heightMatch[1] + ' inches';
+        
+        const painMatch = text.match(/Pain(?:\s*Level)?:?\s*(\d{1,2})\/10/i);
+        if (painMatch) vitals['Pain'] = painMatch[1] + '/10';
+        
+        return vitals;
+    }
+
+    // ----- Main note generation -----
+    function generateNoteFromInput(input) {
+        const text = input.replace(/\r\n/g, '\n');
+        
+        // Extract data
+        const medications = extractMedications(text);
+        const demographics = extractDemographics(text);
+        const vitals = extractVitals(text);
+        const diagnoses = extractDiagnoses(text);
+        const riskFactors = identifyRiskFactors(medications, text);
+        const monitoringRecs = getMedicationMonitoring(medications);
+        
+        // Update risk factors display
+        if (riskFactorsDisplay) {
+            riskFactorsDisplay.textContent = riskFactors.slice(0, 8).join(', ') || 'None identified';
+        }
+        
+        // Format vitals
+        const vitalOrder = ['BP', 'Pulse', 'Temp', 'Resp', 'O2 Sats', 'Weight', 'Height', 'Pain'];
+        const vitalParts = [];
+        for (let k of vitalOrder) {
+            if (vitals[k]) vitalParts.push(`${k}: ${vitals[k]}`);
+        }
+        const vitalString = vitalParts.length > 0 ? vitalParts.join('; ') : 'Vitals per chart';
+        
+        // Format diagnoses
+        const dxNumberedList = diagnoses.formatted.length > 0 
+            ? diagnoses.formatted.map((dx, index) => `${index + 1}. ${dx}`).join('\n')
+            : 'none recorded';
+        const dxCodeString = diagnoses.codes.length > 0 ? diagnoses.codes.join(', ') : 'none';
+        
+        // Format PMH
+        const pmhString = diagnoses.formatted
+            .map(dx => {
+                const parts = dx.split(' - ');
+                return parts.length > 1 ? parts[1] : parts[0];
+            })
+            .slice(0, 8)
+            .join(', ') || 'None listed';
+        
+        // Format allergies
+        let allergies = 'NKDA';
+        const allergyMatch = text.match(/ALLERGIES?:\s*(.+?)(?:\n\s*\n|\n[A-Z]|$)/is);
+        if (allergyMatch) {
+            let raw = allergyMatch[1].trim();
+            if (raw && !/NKA|NKDA|No Known/i.test(raw)) {
+                allergies = raw.split('\n')[0].trim();
+            }
+        }
+        
+        // Format monitoring text
+        let monitoringText = '';
+        if (monitoringRecs.length > 0) {
+            monitoringText = '\n\nMedication Monitoring:\n- ' + monitoringRecs.slice(0, 3).join('\n- ');
+        }
+        
+        // Format medications as bullet points
+        const medBulletList = medications.length > 0 
+            ? medications.map(med => `  • ${med}`).join('\n')
+            : '  • None listed';
+        
+        // Physical exam template
+        const physicalExam = `Physical Exam:
+General: appears comfortable at rest, in no acute distress.
+HEENT: Normocephalic, atraumatic. No epistaxis.
+Neck: Supple. No JVD noted.
+Lungs: Normal respiratory rate. No audible wheezes, normal effort.
+Heart: Normal heart rate.
+Abdomen: Non-distended.
+Extremities: No cyanosis.
+Skin: Warm, dry, intact. 
+Neurological: No focal deficit.`;
+
+        // Return formatted note
+        return `CC: ${visitTypeSelect.value}
+Patient: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | DOA: ${demographics.doa} | Facility: ${demographics.fac}
+
+Subjective: ${demographics.name} is an elderly ${demographics.gender} who was admitted here for nursing care. 
+${getVisitTypeText(visitTypeSelect.value)}Case discussed with staff. No active bleeding. Pt tolerates medications and meals.
+
+Per Nurse notes: ""
+
+ROS: No n/v/d. No sob. No chest pain.
+Assistive Device(s): wheelchair [ ] walker [ ] cane [ ] glasses [ ] reacher [ ] hearing aid [ ] dentures [ ]
+[✓ indicates device(s) used].
+
+PMH: ${pmhString}.
+PSH: Noted. No changes.
+FH: Noted. No changes.
+SH: Resident here since ${demographics.doa}.
+
+Allergies: ${allergies}.
+
+Medications (${medications.length} total):
+${medBulletList}
+
+VS: ${vitalString}
+
+${physicalExam}
+
+Assessment:
+${dxNumberedList}
+
+Plan:
+- Continue supportive care
+- Continue current medications as listed
+- Continue current diet and skincare
+- Continue pain control
+- Fall precautions
+${monitoringText ? '- ' + monitoringText.replace(/\n/g, '\n- ') : ''}
+- Follow up per protocol or as needed
+
+Risk Assessment: Patient on multiple high-risk medications. Polypharmacy (${medications.length} medications) increases risk of drug interactions and adverse effects. Additional risks: ${riskFactors.slice(0, 8).join(', ')}.
+
+ICD10 Codes: ${dxCodeString}
+CPT code: ${getVisitCPT(visitTypeSelect.value)}
+NGA
+
+Billing: ------------------------------------------------------------------
+${demographics.doe}|${demographics.name}|${demographics.dob}|${demographics.fac}|${dxCodeString}|${getVisitCPT(visitTypeSelect.value)}|${visitTypeSelect.value}`;
+    }
+
+    // ----- Update output -----
+    function updateOutput() {
+        const input = inputTextarea.value;
+        const output = generateNoteFromInput(input);
+        outputTextarea.value = output;
+        copyConfirmSpan.classList.remove('show');
+    }
+
+    // ----- Clear output -----
+    function clearOutput() {
+        outputTextarea.value = '';
+        copyConfirmSpan.classList.remove('show');
+        riskFactorsDisplay.textContent = 'None identified';
+    }
+
+    // ----- Copy to clipboard -----
+    function copyOutput() {
+        if (!outputTextarea.value.trim()) {
+            alert('Nothing to copy — generate a note first.');
+            return;
+        }
+        outputTextarea.select();
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        copyConfirmSpan.classList.add('show');
+        setTimeout(() => copyConfirmSpan.classList.remove('show'), 2000);
+    }
+
+    // ----- Event listeners -----
+    generateBtn.addEventListener('click', updateOutput);
+    resetSampleBtn.addEventListener('click', () => {
+        resetToSample();
+        updateOutput();
+    });
+    clearBtn.addEventListener('click', clearOutput);
+    copyBtn.addEventListener('click', copyOutput);
+    visitTypeSelect.addEventListener('change', updateOutput);
+
+    // On page load
+    window.addEventListener('load', () => {
+        resetToSample();
+        updateOutput();
+    });
+})();
+</script>
+</body>
+</html>
