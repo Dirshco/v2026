@@ -943,11 +943,13 @@ const weight = match ? match[1] : "";
             //////
             
             // Extract Height
+            let heightValue0 = null;
             let heightValue = null;
             const heightMatch = text.match(/Height:?\s*(\d{2}\.?\d?\s*(?:in|inch|inches)?)/i);
             if (heightMatch) {
-                vitals['Height'] = heightMatch[1];
-                heightValue = heightMatch[1];
+                heightValue0 = heightMatch[1].trim();
+                heightValue = heightValue0 + ' inch';
+                vitals['Height'] = heightValue;
             }
             
             // Extract BMI (from text or calculate)
@@ -1074,7 +1076,7 @@ Neurological: No focal deficit.`;
 
             // ----- 9. FINAL TEMPLATE (CPT 99309) - with numbered assessment and plan -----
             return `CC: ${visitType}
-Patient: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | Date of Admisison: ${demographics.doa} |  ${demographics.fac}
+Patient: ${demographics.name} | DOB: ${demographics.dob} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | DOA: ${demographics.doa} |  ${demographics.fac}
 . 
 Subjective: ${demographics.name} is an elderly ${demographics.gender} who was admitted here for nursing care. 
 ${visitTypeText}${visitType === 'other' ? '' : ''}Case d/w the staff. No active bleeding. Pt tolerates medications and meals. RD following. 
