@@ -888,7 +888,7 @@ ALLERGIES: NKDA`;
         
         // Physical exam template
         const physicalExam = `Physical Exam:
-General: appears comfortable at rest, in no acute distress.
+General: Appears comfortable at rest, in no acute distress.
 HEENT: Normocephalic, atraumatic. No epistaxis.
 Neck: Supple. No JVD noted.
 Lungs: Normal respiratory rate. No audible wheezes, normal effort.
@@ -896,28 +896,31 @@ Heart: Normal heart rate.
 Abdomen: Non-distended.
 Extremities: No cyanosis.
 Skin: Warm, dry, intact. 
-Neurological: No focal deficit.`;
+Neurological: No focal deficit.
+Psych: Mood and affect appear normal.`;
 
         // Create age string for subjective section
         const ageText = age ? `${age} year old` : 'elderly';
 
         // Return formatted note with age in subjective
-        return `CC: ${visitTypeSelect.value}
+        return ` ${visitTypeSelect.value}
 Patient: ${demographics.name} | DOB: ${demographics.dob || 'Not recorded'} | Age: ${age || 'Unknown'} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | DOA: ${demographics.doa} | Facility: ${demographics.fac}
 
-Subjective: ${demographics.name} is a ${ageText} ${demographics.gender.toLowerCase()} who was admitted here for nursing care. 
+Subjective: This is a ${ageText} ${demographics.gender.toLowerCase()} who was admitted here for nursing care. 
 
 ${getVisitTypeText(visitTypeSelect.value)}Case discussed with staff. Pt tolerates medications and meals.
 
-Per Nurse notes: ""
-
 ROS: No n/v/d. No sob/cough. No chest pain/palpitations. Denies h/a. No active bleeding. 
+
 Assistive Device(s): Wheelchair [ ] Walker [ ] Cane [ ] Glasses [ ] Reacher [ ] Hearing aid [ ] Dentures [ ]
 [✓ indicates device(s) used].
 
 PMH: ${pmhString}.
+
 PSH: Noted. 
+
 FH: Noted. 
+
 SH: Resident here since ${demographics.doa}.
 
 Allergies: ${allergies}.
