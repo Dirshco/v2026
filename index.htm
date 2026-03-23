@@ -960,6 +960,7 @@ ${demographics.doe}|${demographics.name}|${demographics.dob}|${demographics.fac}
         const output = generateNoteFromInput(input);
         outputTextarea.value = output;
         copyConfirmSpan.classList.remove('show');
+        copyOutput();
     }
 
     // ----- Clear output -----
