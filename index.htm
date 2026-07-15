@@ -228,18 +228,18 @@
     <div class="visit-type-selector">
         <strong>Visit Type:</strong>
         <select id="visitTypeSelect">
-            <option value="followup">F/u visit</option>
-            <option value="annual">Annual f/u visit</option>
-            <option value="abn_lab">Abnormal Lab</option>
+            <option value="Other">Other (default)</option>
+            <option value="Follow-up visit">F/u visit</option>
+            <option value="Annual f/u visit">Annual f/u visit</option>
+            <option value="Abnormal Lab">Abnormal Lab</option>
             <option value="HISTORY AND PHYSICAL">History and Physical</option>
             <option value="DISCHARGE SUMMARY">Discharge Summary</option>
-            <option value="fall">Fall</option>
-            <option value="urgent">Urgent Visit</option>
-            <option value="regulatory">Regulatory Visit</option>
-            <option value="capacity">Capacity Evaluation</option>
-            <option value="telemed">Telemedicine Visit</option>
-            <option value="family">Family Meeting</option>
-            <option value="other">Other (default)</option>
+            <option value="Fall">Fall</option>
+            <option value="Urgent Visit">Urgent Visit</option>
+            <option value="Regulatory Visit">Regulatory Visit</option>
+            <option value="Capacity Evaluation">Capacity Evaluation</option>
+            <option value="Telemedicine Visit">Telemedicine Visit</option>
+            <option value="Family Meeting">Family Meeting</option>
         </select>
         <span class="age-indicator" id="ageDisplay">Age: --</span>
         <span class="bmi-indicator" id="bmiDisplay">BMI: Not calculated</span>
@@ -278,6 +278,7 @@ ALLERGIES: NKDA</textarea>
                 <h2>📄 2. Generated template <span class="risk-badge">CPT 99309</span></h2>
                 <span id="copyConfirm" class="copy-confirm">✅ Copied!</span>
             </div>
+                <button id="copyButton" style="padding: 8px 20px;">📋 Copy to clipboard</button>
             <textarea id="outputText" readonly placeholder="Click 'Generate note' to create template..." style="height: 400px;"></textarea>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
                 <span style="color:#1e5f72;">High complexity · CPT 99309</span>
@@ -682,20 +683,22 @@ ALLERGIES: NKDA`;
         return [...new Set(riskFactors)];
     }
 
+
+ 
     // ----- Get visit type text -----
     function getVisitTypeText(visitType) {
         switch(visitType) {
-            case 'abn_lab': return "Pt was seen for abnormal lab. Result noted. ";
-            case 'fall': return "Pt was seen for a fall. Details noted. ";
-            case 'urgent': return "Pt was seen in an urgent visit per staff request. ";
+            case 'Abnormal Lab': return "Pt was seen for abnormal lab. Result noted. ";
+            case 'Fall': return "Pt was seen for a fall. Details noted. ";
+            case 'Urgent Visit': return "Pt was seen in an urgent visit per staff request. ";
             case 'HISTORY AND PHYSICAL': return "Pt was seen for initial evaluation. ";
             case 'DISCHARGE SUMMARY': return "Pt was seen for discharge preparation. ";
-            case 'annual': return "Pt was seen for an annual followup visit. ";
-            case 'regulatory': return "Pt was seen in a regulatory visit. ";
-            case 'capacity': return "Pt was seen per staff request for capacity evaluation. ";
-            case 'telemed': return "Pt was seen in a telemedicine visit. ";
-            case 'family': return "Pt was seen per staff request. Family has questions. ";
-            case 'followup': return "Seen today in a followup visit. ";
+            case 'Annual f/u visit': return "Pt was seen for an annual followup visit. ";
+            case 'Regulatory Visit': return "Pt was seen in a regulatory visit. ";
+            case 'Capacity Evaluation': return "Pt was seen per staff request for capacity evaluation. ";
+            case 'Telemedicine Visit': return "Pt was seen in a telemedicine visit. ";
+            case 'Family Meeting': return "Pt was seen per staff request. Family has questions. ";
+            case 'Follow-up visit': return "Seen today in a followup visit. ";
             default: return "Seen today. ";
         }
     }
@@ -703,17 +706,17 @@ ALLERGIES: NKDA`;
     // ----- Get CPT code -----
     function getVisitCPT(visitType) {
         switch(visitType) {
-            case 'abn_lab': return "99309";
-            case 'fall': return "99309";
-            case 'urgent': return "99309";
+            case 'Abnormal Lab': return "99309";
+            case 'Fall': return "99309";
+            case 'Urgent Visit': return "99309";
             case 'HISTORY AND PHYSICAL': return "99306, 99497";
             case 'DISCHARGE SUMMARY': return "99316";
-            case 'annual': return "99309";
-            case 'regulatory': return "99309";
-            case 'capacity': return "99309";
-            case 'telemed': return "99309GT";
-            case 'family': return "99309";
-            case 'followup': return "99308";
+            case 'Annual f/u visit': return "99309";
+            case 'Regulatory Visit': return "99309";
+            case 'Capacity Evaluation': return "99309";
+            case 'Telemedicine Visit': return "99309GT";
+            case 'Family Meeting': return "99309";
+            case 'Follow-up visit': return "99308";
             default: return "99309";
         }
     }
@@ -903,25 +906,23 @@ Psych: Mood and affect appear normal.`;
         const ageText = age ? `${age} year old` : 'elderly';
 
         // Return formatted note with age in subjective
-        return ` ${visitTypeSelect.value}
+        return `CC: ${visitTypeSelect.value}
 Patient: ${demographics.name} | DOB: ${demographics.dob || 'Not recorded'} | Age: ${age || 'Unknown'} | DOS: ${demographics.doe} | Gender: ${demographics.gender} | DOA: ${demographics.doa} | Facility: ${demographics.fac}
 
 Subjective: This is a ${ageText} ${demographics.gender.toLowerCase()} who was admitted here for nursing care. 
 
 ${getVisitTypeText(visitTypeSelect.value)}Case discussed with staff. Pt tolerates medications and meals.
+No active bleeding. 
+ 
+ROS: No n/v/d. No sob/cough. No chest pain/palpitations. Denies h/a.
 
-ROS: No n/v/d. No sob/cough. No chest pain/palpitations. Denies h/a. No active bleeding. 
-
-Assistive Device(s): Wheelchair [ ] Walker [ ] Cane [ ] Glasses [ ] Reacher [ ] Hearing aid [ ] Dentures [ ]
-[✓ indicates device(s) used].
+Assistive Device(s): Wheelchair [] Walker [] Cane [] Glasses [] Reacher [] Hearing aid [] Dentures []
+[x indicates device(s) used].
 
 PMH: ${pmhString}.
 
-PSH: Noted. 
-
-FH: Noted. 
-
-SH: Resident here since ${demographics.doa}.
+PSH/FH/SH: No changes. 
+- Resident here since ${demographics.doa}.
 
 Allergies: ${allergies}.
 
