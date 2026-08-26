@@ -228,7 +228,7 @@
     <div class="visit-type-selector">
         <strong>Visit Type:</strong>
         <select id="visitTypeSelect">
-            <option value="Other">Other (default)</option>
+            <option value="Follow-up visit">Other (default)</option>
             <option value="Follow-up visit">F/u visit</option>
             <option value="Annual f/u visit">Annual f/u visit</option>
             <option value="Abnormal Lab">Abnormal Lab</option>
@@ -243,6 +243,7 @@
         </select>
         <span class="age-indicator" id="ageDisplay">Age: --</span>
         <span class="bmi-indicator" id="bmiDisplay">BMI: Not calculated</span>
+        <button id="generateBtn" class="primary">⚡ Generate note from input</button>
     </div>
 
     <div class="main-panel">
@@ -699,7 +700,7 @@ ALLERGIES: NKDA`;
             case 'Telemedicine Visit': return "Pt was seen in a telemedicine visit. ";
             case 'Family Meeting': return "Pt was seen per staff request. Family has questions. ";
             case 'Follow-up visit': return "Seen today in a followup visit. ";
-            default: return "Seen today. ";
+            default: return "Seen today in a f/u visit. ";
         }
     }
 
@@ -898,9 +899,9 @@ Lungs: Normal respiratory rate. No audible wheezes, normal effort.
 Heart: Normal heart rate.
 Abdomen: Non-distended.
 Extremities: No cyanosis.
-Skin: Warm, dry, intact. 
+Skin: Warm, dry, see nurse note. 
 Neurological: No focal deficit.
-Psych: Mood and affect appear normal.`;
+Psych: Mood and affect appear normal. No agitation. No hallucinations.`;
 
         // Create age string for subjective section
         const ageText = age ? `${age} year old` : 'elderly';
@@ -937,6 +938,7 @@ Assessment:
 ${dxNumberedList}
 
 Plan:
+- Continue current diet. see orders. RD following.
 - Continue supportive care
 - Continue current medications as listed
 - Continue current diet and skincare
