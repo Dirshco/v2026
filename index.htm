@@ -10,23 +10,13 @@
 <title>Nursing Home Note Generator — CPT 99309</title>
 <style>
     :root {
-        --bg: #f0f2f5;
-        --surface: #ffffff;
-        --surface-alt: #f9fafc;
-        --border: #bccbd2;
-        --border-soft: #cbdbe0;
-        --text: #0b3b4b;
-        --text-soft: #1d4e5f;
-        --text-muted: #3f6f7e;
-        --primary: #1d5d71;
-        --primary-dark: #134c60;
-        --primary-light: #e2f0f5;
-        --accent: #2b95b3;
-        --danger: #d15a5a;
-        --warn-bg: #f9f2e5;
-        --guidance-bg: #e8f0f5;
-        --success-bg: #dff0e6;
-        --success-text: #1e7b4b;
+        --bg: #f0f2f5; --surface: #ffffff; --surface-alt: #f9fafc;
+        --border: #bccbd2; --border-soft: #cbdbe0;
+        --text: #0b3b4b; --text-soft: #1d4e5f; --text-muted: #3f6f7e;
+        --primary: #1d5d71; --primary-dark: #134c60; --primary-light: #e2f0f5;
+        --accent: #2b95b3; --danger: #d15a5a;
+        --warn-bg: #f9f2e5; --guidance-bg: #e8f0f5;
+        --success-bg: #dff0e6; --success-text: #1e7b4b;
         --focus-ring: #a3d0db70;
     }
     @media (prefers-color-scheme: dark) {
@@ -444,6 +434,10 @@
         return 'Obese Class III';
     }
 
+    function formatMedCount(n) {
+        return n > 10 ? '10+ medications' : n + ' total';
+    }
+
     // ==================== Demographics ====================
     function extractDemographics(text) {
         const demo = { name: '', dob: null, age: null, dos: null, doa: '', fac: '', gender: '' };
@@ -612,15 +606,23 @@
     }
 
     // ==================== Diagnoses ====================
+    // Mixed-case friendly; no newline crossing; strips trailing dates
     function extractDiagnoses(text) {
         const formatted = [];
         const codes = [];
         const seen = {};
-        const re = /\b([A-Z]\d{2}(?:\.\d{1,4})?)\b[\s\-–:]+([A-Z][A-Z0-9\s,\/\-\(\)']{2,})/g;
+        // ICD10 code, then separator (space/tab/hyphen/en-dash/colon), then description
+        // that stays on the same line and does not include tabs or newlines.
+        const re = /\b([A-Z]\d{2}(?:\.\d{1,4})?)\b[ \t\-–:]+([A-Za-z][A-Za-z0-9 ,\/\-\(\)']{2,})/g;
         let m;
         while ((m = re.exec(text)) !== null) {
             const code = m[1];
-            const desc = m[2].trim().replace(/\s+/g, ' ');
+            let desc = m[2].trim().replace(/\s+/g, ' ');
+            // Strip trailing dates (MM/DD/YYYY, YYYY-MM-DD, DD-MM-YYYY, etc.)
+            desc = desc.replace(/\s+\d{1,4}[\/\-\.]\d{1,2}[\/\-\.]\d{1,4}\s*$/, '').trim();
+            // Strip trailing punctuation/separators that may remain
+            desc = desc.replace(/[\s\-–:,]+$/, '').trim();
+            if (!desc || desc.length < 2) continue;
             const key = code + '|' + desc;
             if (!seen[key]) {
                 seen[key] = 1;
@@ -684,8 +686,12 @@
             if (bmi >= 30) pushUnique('Obesity (BMI ' + bmi + ')');
             else if (bmi >= 25) pushUnique('Overweight (BMI ' + bmi + ')');
         }
-        if (meds.length >= 10) pushUnique('Polypharmacy (' + meds.length + ' meds)');
-        else if (meds.length >= 5) pushUnique('Polypharmacy (' + meds.length + ' meds)');
+        // Polypharmacy: >10 → (10+ medications); 5–10 → (N medications)
+        if (meds.length > 10) {
+            pushUnique('Polypharmacy (10+ medications)');
+        } else if (meds.length >= 5) {
+            pushUnique('Polypharmacy (' + meds.length + ' medications)');
+        }
 
         return risks;
     }
@@ -807,9 +813,9 @@
         });
         const vitalString = vitalParts.length ? vitalParts.join('; ') : 'Vitals per chart';
 
-        // Diagnoses
+        // Diagnoses — each on its own line, starting with the ICD10 code (no numbering)
         const dxList = dx.formatted.length
-            ? dx.formatted.map(function (d, i) { return (i + 1) + '. ' + d; }).join('\n')
+            ? dx.formatted.join('\n')
             : 'none recorded';
         const dxCodes = dx.codes.length ? dx.codes.join(', ') : 'none';
 
@@ -850,7 +856,7 @@
             ? 'Total time spent: ' + timeMin + ' minutes (' + complexity.basis + '-based selection).\n'
             : '';
 
-        // ---- NEW: Plan sub-lines ----
+        // ---- Plan sub-lines ----
         const isHP = visitType === 'HISTORY AND PHYSICAL';
         const medReviewLine = isHP ? 'Medications reviewed and reconciled' : 'Medications reviewed';
         const hasAntipsychotic = hasAntipsychoticMedication(meds);
@@ -860,7 +866,7 @@
 
         const planLines = [
             'Plan:',
-            '- Continue current diet and orders. RD following.',
+            '- Continue current diet.',
             '- Continue supportive care.',
             '- Continue current medications as listed.',
             '- ' + medReviewLine,
@@ -876,6 +882,11 @@
         planLines.push('- ' + mdmLine);
         const planText = planLines.join('\n');
 
+        // Polypharmacy wording for risk assessment
+        const polyText = meds.length > 10
+            ? 'Polypharmacy (10+ medications)'
+            : 'Polypharmacy (' + meds.length + ' medications)';
+
         return [
             'CC: ' + (visitType || 'Other'),
             'Patient: ' + (demo.name || '[Name]') +
@@ -888,9 +899,10 @@
             '',
             'Subjective: This is a ' + ageText + ' ' + genderText + ' who was admitted here for nursing care.',
             '',
-            getVisitTypeText(visitType) + 'Case discussed with staff. Pt tolerates medications and meals. No active bleeding.',
+            getVisitTypeText(visitType) + 'Case discussed with staff. Pt tolerates medications and meals.',
             '',
-            'ROS: No n/v/d. No sob/cough. No chest pain/palpitations. Denies h/a.',
+            'ROS: No n/v/d. No sob/cough. No chest pain/palpitations. Denies h/a. No active bleeding.',
+            'No active bleeding.',
             '',
             'Assistive Device(s): Wheelchair [] Walker [] Cane [] Glasses [] Reacher [] Hearing aid [] Dentures []',
             '[x indicates device(s) used].',
@@ -902,7 +914,7 @@
             '',
             'Allergies: ' + allergies + '.',
             '',
-            'Medications (' + meds.length + ' total):',
+            'Medications (' + formatMedCount(meds.length) + '):',
             medBullet,
             '',
             'VS: ' + vitalString,
@@ -915,7 +927,7 @@
             planText,
             '',
             'Risk Assessment: ' + ageText + ' ' + genderText + ' on multiple high-risk medications.',
-            'Polypharmacy (' + meds.length + ' medications) increases risk of drug interactions and adverse effects.',
+            polyText + ' increases risk of drug interactions and adverse effects.',
             'Additional risks: ' + (risks.length ? risks.join(', ') : 'none identified') + '.',
             '',
             timeLine + 'MDM Complexity: ' + complexity.level + ' (' + complexity.basis + '-based).',
@@ -924,7 +936,9 @@
             'CPT code: ' + cptDisplay,
             '',
             'NGA',
-            '\nBilling: ' + [demo.dos || '', demo.name || '', demo.dob ? fmtDate(demo.dob) : '',
+            '',
+            'Billing: ',
+            ' ' + [demo.dos || '', demo.name || '', demo.dob ? fmtDate(demo.dob) : '',
                 demo.fac || '', dxCodes, cptDisplay, visitType || 'Other'].join('|')
         ].join('\n');
     }
