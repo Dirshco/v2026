@@ -697,19 +697,14 @@
     }
 
 
-   // ===== If age is 80-89, add "an"; otherwise, add "a"
-function getAna(age) {
-    var Ana = "";
-
-    if (age) {
-        if (age >= 80 && age < 90) {
-            Ana = "an ";
-        } else {
-            Ana = "a ";
-        }
+  function getAgeDescription(age, gender) {
+    if (age == null) {
+        return 'This resident';
     }
 
-    return Ana;
+    const article = age >= 80 && age < 90 ? 'an ' : 'a ';
+
+    return article + age + '-year-old ' + gender.toLowerCase();
 }
     
     // ==================== Medication monitoring ====================
@@ -791,7 +786,7 @@ function getAna(age) {
         const bmi = vitals.BMI || null;
         const risks = identifyRiskFactors(meds, text, bmi, age);
         const monitoring = getMedicationMonitoring(meds);
-        const Ana = getAna(age); // 
+        const patientDescription = getAgeDescription(age, genderText); 
 
         // Indicators
         riskFactorsDisplay.textContent = risks.length ? risks.slice(0, 10).join(', ') : 'None identified';
@@ -914,7 +909,7 @@ function getAna(age) {
                 ' | DOA: ' + (demo.doa || '') +
                 ' | Facility: ' + (demo.fac || ''),
             '',
-            'Subjective: This is ' + Ana  + ageText + ' ' + genderText + ' who was admitted here for nursing care.',
+            'Subjective: This is ' +  patientDescription +  ' who was admitted to this facility for nursing care.',
             '',
             getVisitTypeText(visitType) + 'Case discussed with staff. Pt tolerates medications and meals.',
             '',
