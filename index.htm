@@ -696,17 +696,16 @@
         return risks;
     }
 
+    function getAgeDescription(age, gender) {
+        if (age == null) {
+            return 'resident';
+        }
 
-  function getAgeDescription(age, gender) {
-    if (age == null) {
-        return 'This resident';
+        const article = age >= 80 && age < 90 ? 'an ' : 'a ';
+
+        return article + age + '-year-old ' + gender.toLowerCase();
     }
 
-    const article = age >= 80 && age < 90 ? 'an ' : 'a ';
-
-    return article + age + '-year-old ' + gender.toLowerCase();
-}
-    
     // ==================== Medication monitoring ====================
     function getMedicationMonitoring(meds) {
         const t = meds.join(' ').toLowerCase();
@@ -786,7 +785,13 @@
         const bmi = vitals.BMI || null;
         const risks = identifyRiskFactors(meds, text, bmi, age);
         const monitoring = getMedicationMonitoring(meds);
-        const patientDescription = getAgeDescription(age, genderText); 
+
+        const ageText = age ? age + '-year-old' : 'elderly';
+        const genderText = (demo.gender || 'resident').toLowerCase();
+        const patientDescription = getAgeDescription(age, genderText);
+        const subjectiveOpening = age != null
+            ? 'This is ' + patientDescription + ' who was admitted to this facility for nursing care.'
+            : 'This resident was admitted to this facility for nursing care.';
 
         // Indicators
         riskFactorsDisplay.textContent = risks.length ? risks.slice(0, 10).join(', ') : 'None identified';
@@ -841,9 +846,6 @@
         const medBullet = meds.length
             ? meds.map(function (m) { return '  • ' + m; }).join('\n')
             : '  • None listed';
-
-        const ageText = age ? age + ' year old' : 'elderly';
-        const genderText = (demo.gender || 'resident').toLowerCase();
 
         const physicalExam = [
             'Physical Exam:',
@@ -909,7 +911,7 @@
                 ' | DOA: ' + (demo.doa || '') +
                 ' | Facility: ' + (demo.fac || ''),
             '',
-            'Subjective: This is ' +  patientDescription +  ' who was admitted to this facility for nursing care.',
+            'Subjective: ' + subjectiveOpening,
             '',
             getVisitTypeText(visitType) + 'Case discussed with staff. Pt tolerates medications and meals.',
             '',
