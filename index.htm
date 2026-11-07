@@ -736,7 +736,7 @@
             'Regulatory Visit': 'Pt was seen in a regulatory visit. ',
             'Capacity Evaluation': 'Pt was seen per staff request for capacity evaluation. ',
             'Telemedicine Visit': 'Pt was seen in a telemedicine visit. ',
-            'Family Meeting': 'Pt was seen per staff request. Family has questions. ',
+            'Family Meeting': 'Pt was seen per staff request. Family has questions. All questions were answered. ',
             'Follow-up visit': 'Seen today in a follow-up visit. '
         };
         return map[vt] || 'Seen today for evaluation. ';
@@ -964,7 +964,7 @@ function extractCodeStatus(text) {
             '',
             'Billing: ',
             ' ' + [demo.dos || '', demo.name || '', demo.dob ? fmtDate(demo.dob) : '',
-                demo.fac || '', dxCodes, cptDisplay, visitType || 'Other'].join('|')
+                demo.fac || '', billingDxCodes, cptDisplay, visitType || 'follow-up'].join('|')
         ].join('\n');
     }
 
