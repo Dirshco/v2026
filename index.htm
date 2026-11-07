@@ -772,7 +772,16 @@
         if (riskCount >= 3) return { level: 'Moderate (MDM)', cpt: '99308', basis: 'MDM' };
         return { level: 'Low (MDM)', cpt: '99307', basis: 'MDM' };
     }
-
+    //  =================== get code status (e.g DNR) ========================
+    // Extract Code Status from raw input text
+function extractCodeStatus(text) {
+    const match = text.match(/(?:Code\s*Status|Advance\s*Directives?):?\s*([^\n]+)/i);
+    if (match) return match[1].trim();
+    if (/\bDNR\b/i.test(text)) return 'DNR';
+    if (/\bCPR\b/i.test(text)) return 'CPR';
+    return null;
+}
+    
     // ==================== Generate note ====================
     function generateNoteFromInput(input, visitType, timeMin) {
         const text = input.replace(/\r\n/g, '\n');
@@ -785,7 +794,10 @@
         const bmi = vitals.BMI || null;
         const risks = identifyRiskFactors(meds, text, bmi, age);
         const monitoring = getMedicationMonitoring(meds);
-
+        const codeStatus = extractCodeStatus(text);
+        // Limit ICD10 codes for billing row to 4-5 chronic condition codes
+        const billingDxCodes = dx.codes.slice(0, 4).join(', '); // Limits to 4 codes (e.g., I48.91, E11.9, E03.9, I50.42)
+        
         const ageText = age ? age + '-year-old' : 'elderly';
         const genderText = (demo.gender || 'resident').toLowerCase();
         const patientDescription = getAgeDescription(age, genderText);
