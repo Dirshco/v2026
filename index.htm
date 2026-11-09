@@ -655,15 +655,48 @@
         const condText = text.toLowerCase();
         function pushUnique(val) { if (risks.indexOf(val) === -1) risks.push(val); }
 
+        // Here is an expanded, clinically aligned JavaScript regular expression array tailored specifically for nursing home (NH) resident safety, based on high-risk medication categories identified by the AGS Beers Criteria® and ISMP High-Alert Medications.
+        
         const medRisks = [
-            { re: /apixaban|eliquis|warfarin|coumadin|rivaroxaban|xarelto|dabigatran/i, name: 'Anticoagulation' },
-            { re: /amiodarone|cordarone/i, name: 'Amiodarone' },
-            { re: /insulin|glargine|lispro|humalog|novolog|lantus/i, name: 'Insulin' },
-            { re: /glipizide|glyburide|glimepiride|sulfonylurea/i, name: 'Diabetes meds (hypoglycemia)' },
-            { re: /furosemide|lasix|bumetanide|torsemide/i, name: 'Diuretics' },
-            { re: /lisinopril|losartan|valsartan|entresto|sacubitril/i, name: 'Antihypertensives' },
-            { re: /morphine|oxycodone|hydrocodone|tramadol|opioid/i, name: 'Opioids' }
-        ];
+            // High-Risk Anticoagulants & Antiplatelets (Bleeding risk)
+  { re: /apixaban|eliquis|warfarin|coumadin|jantoven|rivaroxaban|xarelto|dabigatran|pradaxa|edoxaban|savaysa|enoxaparin|lovenox|heparin|clopidogrel|plavix|prasugrel|effient|ticagrelor|brilinta|cilostazol/i, name: 'Anticoagulant / Antiplatelet (Bleeding Risk)' },
+
+  // Antiarrhythmics & Digoxin (Toxicity, bradycardia, fall risk)
+  { re: /amiodarone|cordarone|pacerone|digoxin|lanoxin|sotalol|flecainide|dronedarone|multaq/i, name: 'High-Risk Antiarrhythmic / Digoxin' },
+
+  // Insulins (High-alert hypoglycemia)
+  { re: /insulin|glargine|lantus|toujeo|basaglar|semglee|lispro|humalog|admelog|aspart|novolog|fiasp|detemir|levemir|degludec|tresiba|nph|regular/i, name: 'Insulin (Hypoglycemia Risk)' },
+
+  // Sulfonylureas (Severe prolonged hypoglycemia - Beers Criteria high risk)
+  { re: /glipizide|glucotrol|glyburide|micronase|diabeta|glimepiride|amaryl|chlorpropamide/i, name: 'Sulfonylurea (Severe Hypoglycemia Risk)' },
+
+  // Diuretics (Dehydration, electrolyte imbalance, hypotension, fall risk)
+  { re: /furosemide|lasix|bumetanide|bumex|torsemide|demadex|hydrochlorothiazide|hctz|chlorthalidone|metolazone|spironolactone|aldactone/i, name: 'Diuretic (Dehydration / Electrolyte / Fall Risk)' },
+
+  // Antihypertensives & Cardiac (Hypotension, syncope, bradycardia)
+  { re: /lisinopril|losartan|valsartan|entresto|sacubitril|amlodipine|nifedipine|diltiazem|verapamil|metoprolol|atenolol|carvedilol|propranolol|hydralazine|clonidine/i, name: 'Antihypertensive / Cardiac (Orthostatic / Fall Risk)' },
+
+  // Opioids (Sedation, respiratory depression, constipation, delirium, fall risk)
+  { re: /morphine|oxycodone|oxycontin|roxycodone|hydrocodone|vicodin|norco|tramadol|ultram|fentanyl|duragesic|hydromorphone|dilaudid|methadone|buprenorphine|targiniq|tapentadol/i, name: 'Opioid (Sedation / Respiratory / Fall Risk)' },
+
+  // Sedative-Hypnotics & Benzodiazepines (Delirium, cognitive impairment, fall/fracture risk)
+  { re: /alprazolam|xanax|lorazepam|ativan|clonazepam|klonopin|diazepam|valium|temazepam|restoril|zolpidem|ambien|eszopiclone|lunesta|zaleplon|sonata/i, name: 'Benzodiazepine / Z-Drug (Sedation / Delirium / Fall Risk)' },
+
+  // Antipsychotics (Black Box Warning for elderly with dementia, EPS, sedation)
+  { re: /haloperidol|haldol|quetiapine|seroquel|olanzapine|zyprexa|risperidone|risperdal|aripiprazole|abilify|clozapine|ziprasidone|geodon/i, name: 'Antipsychotic (Black Box / Sedation / Fall Risk)' },
+
+  // Strong Anticholinergics & Sedating Antihistamines (Confusion, delirium, urinary retention, dry mouth)
+  { re: /diphenhydramine|benadryl|hydroxyzine|vistaril|atarax|meclizine|antivert|promethazine|phenergan|benztropine|cogentin|trihexyphenidyl|dicyclomine|bentyl|oxybutynin|ditropan|tolterodine|detrol/i, name: 'Strong Anticholinergic (Delirium / Retention Risk)' },
+
+  // Tricyclic Antidepressants - TCAs (Orthostatic hypotension, sedation, anticholinergic toxicity)
+  { re: /amitriptyline|nortriptyline|pamelor|doxepin|imipramine|clomipramine/i, name: 'Tricyclic Antidepressant (Hypotension / Anticholinergic Risk)' },
+
+  // Anticonvulsants / Mood Stabilizers / Neuropathic Agents (Sedation, ataxia, dizziness)
+  { re: /gabapentin|neurontin|pregabalin|lyrica|levetiracetam|keppra|phenytoin|dilantin|carbamazepine|tegretol|valproate|depakote|lamotrigine|lamictal/i, name: 'Anticonvulsant / Neuropathic (Sedation / Ataxia Risk)' },
+
+  // NSAIDs & Steroids (GI bleeding, acute kidney injury, fluid retention)
+  { re: /ibuprofen|advil|motrin|naproxen|aleve|naprosyn|meloxicam|mobic|celecoxib|celebrex|ketorolac|toradol|indomethacin|prednisone|dexamethasone|methylprednisolone|solu-medrol/i, name: 'NSAID / Systemic Corticosteroid (GI Bleed / Renal Risk)' }
+];
         medRisks.forEach(function (r) { if (r.re.test(medText)) pushUnique(r.name); });
 
         const condRisks = [
@@ -707,22 +740,96 @@
     }
 
     // ==================== Medication monitoring ====================
+     // Here is an expanded, robust version of getMedicationMonitoring(meds) updated for nursing home resident safety. It expands coverage across major high-risk drug classes per the AGS Beers Criteria®, CMS State Operations Manual (F-Tag 757/758) for psychotropic & high-risk med monitoring, and standard geriatric protocols.
     function getMedicationMonitoring(meds) {
-        const t = meds.join(' ').toLowerCase();
-        const recs = [];
-        if (/amiodarone|cordarone/.test(t)) recs.push('Amiodarone: monitor TSH, LFTs, CXR annually.');
-        if (/apixaban|eliquis|warfarin|coumadin|rivaroxaban|xarelto|dabigatran/.test(t))
-            recs.push('Anticoagulation: monitor for bleeding; renal function annually.');
-        if (/insulin|glargine|lispro|humalog|novolog|lantus|glipizide|glyburide|glimepiride/.test(t))
-            recs.push('Diabetes meds: monitor A1c q3–6 mo and glucose logs; watch for hypoglycemia.');
-        if (/furosemide|lasix|bumetanide|torsemide/.test(t))
-            recs.push('Diuretics: monitor BMP, weight, and hydration status.');
-        if (/lisinopril|losartan|valsartan|entresto|sacubitril/.test(t))
-            recs.push('Antihypertensives: monitor BMP, potassium, and BP.');
-        if (/levothyroxine|synthroid/.test(t)) recs.push('Levothyroxine: monitor TSH q6–12 mo.');
-        if (/duloxetine|cymbalta|ssri|snri/.test(t)) recs.push('Antidepressant: monitor mood and side effects.');
-        return recs;
-    }
+  // Normalize input string with word boundaries for accurate matching
+  const t = meds.join(' ').toLowerCase();
+  const recs = [];
+
+  // Helper for case-insensitive regular expression testing
+  const has = (pattern) => new RegExp(pattern, 'i').test(t);
+
+  // 1. Antiarrhythmics & Digoxin
+  if (has('amiodarone|cordarone|pacerone')) {
+    recs.push('Amiodarone: Monitor TSH/free T4, LFTs (baseline & q6mo), CXR annually, and baseline PFTs/ECG (QTc).');
+  }
+  if (has('digoxin|lanoxin')) {
+    recs.push('Digoxin: Monitor serum digoxin levels (target 0.5–0.9 ng/mL in geriatrics), renal function (CrCl), potassium, and heart rate.');
+  }
+
+  // 2. Anticoagulants & Antiplatelets
+  if (has('apixaban|eliquis|rivaroxaban|xarelto|dabigatran|pradaxa|edoxaban|savaysa|enoxaparin|lovenox')) {
+    recs.push('DOAC / LMWH: Monitor renal function (CrCl/eGFR q6–12mo or q3mo if renal impairment), CBC (Hgb/Hct), and signs of overt/occult bleeding.');
+  }
+  if (has('warfarin|coumadin|jantoven')) {
+    recs.push('Warfarin: Monitor INR per protocol, CBC, LFTs, diet/vitamin K consistency, and drug interaction reviews.');
+  }
+  if (has('clopidogrel|plavix|prasugrel|effient|ticagrelor|brilinta')) {
+    recs.push('Antiplatelets: Monitor CBC (platelets, Hgb/Hct) and assess skin/GI for signs of bleeding.');
+  }
+
+  // 3. Diabetes Medications
+  if (has('insulin|glargine|lantus|toujeo|basaglar|semglee|lispro|humalog|admelog|aspart|novolog|fiasp|detemir|levemir|degludec|tresiba|nph|regular')) {
+    recs.push('Insulin: Monitor point-of-care blood glucose logs, HbA1c q3–6mo, lipodystrophy at injection sites, and hypoglycemia protocol compliance.');
+  }
+  if (has('glipizide|glucotrol|glyburide|micronase|diabeta|glimepiride|amaryl|chlorpropamide')) {
+    recs.push('Sulfonylurea: High hypoglycemia risk; monitor blood glucose, renal function, and assess for meal omission risks.');
+  }
+  if (has('metformin|glucophage')) {
+    recs.push('Metformin: Monitor eGFR/CrCl annually (q3–6mo if eGFR 30–45 mL/min) and serum Vitamin B12 levels periodically.');
+  }
+
+  // 4. Diuretics
+  if (has('furosemide|lasix|bumetanide|bumex|torsemide|demadex|hydrochlorothiazide|hctz|chlorthalidone|metolazone|spironolactone|aldactone')) {
+    recs.push('Diuretics: Monitor BMP (Na, K, BUN, Cr) q3–6mo, daily/weekly weights, BP/orthostatics, and signs of dehydration/edema.');
+  }
+
+  // 5. Antihypertensives & Renin-Angiotensin System Blockers
+  if (has('lisinopril|losartan|valsartan|entresto|sacubitril|enalapril|ramipril|benazepril|olmesartan|irbesartan')) {
+    recs.push('ACEi / ARB / ARNI: Monitor BMP (serum potassium and creatinine/eGFR) baseline and 1–2 weeks post-dose adjustment, plus BP.');
+  }
+  if (has('amlodipine|norvasc|nifedipine|procardia|diltiazem|verapamil')) {
+    recs.push('Calcium Channel Blockers: Monitor blood pressure, heart rate, and peripheral edema in lower extremities.');
+  }
+
+  // 6. Psychotropics (CMS F-Tag 758 Mandatory Monitoring & Gradual Dose Reduction)
+  if (has('haloperidol|haldol|quetiapine|seroquel|olanzapine|zyprexa|risperidone|risperdal|aripiprazole|abilify|clozapine|ziprasidone')) {
+    recs.push('Antipsychotic (F-758): Monitor target behaviors, side effects (AIMS assessment for tardive dyskinesia q6mo, EPS, orthostatics), lipid profile, fasting glucose, and evaluate for Gradual Dose Reduction (GDR).');
+  }
+  if (has('alprazolam|xanax|lorazepam|ativan|clonazepam|klonopin|diazepam|valium|temazepam|restoril|zolpidem|ambien|eszopiclone|lunesta')) {
+    recs.push('Benzodiazepine / Sedative-Hypnotic (F-758): Monitor excessive sedation, gait instability/fall risk, cognitive impairment, and evaluate for GDR.');
+  }
+  if (has('duloxetine|cymbalta|sertraline|zoloft|escitalopram|lexapro|citalopram|celexa|fluoxetine|prozac|paroxetine|paxol|venlafaxine|effexor|mirtazapine|remeron')) {
+    recs.push('Antidepressants: Monitor PHQ-9/mood response, sodium levels (risk of SIADH/hyponatremia in elderly), and fall risk.');
+  }
+
+  // 7. Opioids & Controlled Analgesics
+  if (has('morphine|oxycodone|oxycontin|hydrocodone|vicodin|norco|tramadol|ultram|fentanyl|duragesic|hydromorphone|dilaudid|methadone|buprenorphine')) {
+    recs.push('Opioids: Monitor pain intensity/functional scale, bowel regimen/constipation, sedation level (POSS), respiratory status, and fall risk.');
+  }
+
+  // 8. Anticonvulsants & Neuropathic Agents
+  if (has('gabapentin|neurontin|pregabalin|lyrica|levetiracetam|keppra|phenytoin|dilantin|carbamazepine|tegretol|valproate|depakote')) {
+    recs.push('Anticonvulsants / Neuropathic Meds: Monitor serum drug levels (if applicable), renal function (dose adjustment needed for gabapentin/pregabalin), gait stability, and somnolence.');
+  }
+
+  // 9. Thyroid Hormone
+  if (has('levothyroxine|synthroid|levoxyl|unithroid|armour')) {
+    recs.push('Levothyroxine: Monitor TSH q6–12mo (or 6–8 weeks post-dose change); check morning administration timing relative to food/calcium.');
+  }
+
+  // 10. High-Risk Anticholinergics & Bladder Agents
+  if (has('oxybutynin|ditropan|tolterodine|detrol|solifenacin|vesicare|diphenhydramine|benadryl|hydroxyzine|vistaril|dicyclomine|bentyl')) {
+    recs.push('Strong Anticholinergic: Monitor total Anticholinergic Cognitive Burden (ACB), urinary retention, severe constipation, dry mouth, and cognitive changes/confusion.');
+  }
+
+  // 11. Chronic NSAIDs & Systemic Corticosteroids
+  if (has('ibuprofen|advil|motrin|naproxen|aleve|meloxicam|mobic|celecoxib|celebrex|prednisone|dexamethasone|methylprednisolone')) {
+    recs.push('NSAID / Corticosteroid: Monitor BP, BMP (renal function), CBC (occult GI blood loss), blood glucose (steroids), and gastroprotective co-therapy.');
+  }
+
+  return recs;
+}
 
     // ==================== Visit type helpers ====================
     function getVisitTypeText(vt) {
@@ -885,6 +992,7 @@ function extractCodeStatus(text) {
         // ---- Plan sub-lines ----
         const isHP = visitType === 'HISTORY AND PHYSICAL';
         const medReviewLine = isHP ? 'Medications reviewed and reconciled' : 'Medications reviewed';
+        const consultTherapyLine = isHP ? 'Consult therapy' : '';
         const hasAntipsychotic = hasAntipsychoticMedication(meds);
         const complexityWord = complexity.level.indexOf('High') === 0 ? 'high' : 'moderate';
         const mdmLine = 'Medical decision-making consistent with ' + complexityWord +
@@ -892,7 +1000,8 @@ function extractCodeStatus(text) {
 
         const planLines = [
             'Plan:',
-            '- Continue current diet.',
+            '- ' + consultTherapyLine,
+            '- Continue current diet:.',
             '- Continue supportive care.',
             '- Continue current medications as listed.',
             '- ' + medReviewLine,
@@ -930,11 +1039,15 @@ function extractCodeStatus(text) {
             'ROS: No n/v/d. No sob/cough. No chest pain/palpitations. Denies h/a. No active bleeding.',
             '',
             'Assistive Device(s): Wheelchair [] Walker [] Cane [] Glasses [] Reacher [] Hearing aid [] Dentures []',
-            '[x indicates device(s) used].',
             '',
             'PMH: ' + pmhString + '.',
             '',
-            'PSH/FH/SH: No changes.',
+            'PSH: No changes.',
+            '',
+            'FH: No changes.',
+            '',
+            'SH: No changes.',
+            '',
             '- Resident here since ' + (demo.doa || 'admission') + '.',
             '',
             'Allergies: ' + allergies + '.',
